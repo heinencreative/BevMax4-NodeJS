@@ -1,0 +1,20 @@
+{
+  "name": "Arnie",
+  "version": "0.0.0",
+  "description": "Beer dispensing robot.",
+  "main": "server.js",
+  "dependencies": {
+    "express": "~4.10.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.arn.com:ae/arnie-node-app.git"
+  },
+  "author": "Arnold Dev Team",
+  "license": "BSD-2-Clause"
+}
