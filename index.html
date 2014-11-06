@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Arnie++</title>
+        <meta name="description" content="Beer Vending Machine">
+        <link rel="stylesheet" href="main.css">
+        
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		
+		<script>
+
+        var thumblist = [
+            "Initializing Scanner",
+            "Scanner Warming up",
+            "Scanning",
+            "Analyzing",
+            "Beeping",
+            "Connecting with 56k modem",
+            "Creating Screechy Noises",
+            "Generating mysterious clicking noises",
+            "Comparing swirly parts to squiggly parts",
+            "Analyzing unique liney parts",
+            "DNA being accessed",
+            "DNA being sequenced",
+            "Genetic Clone Initiated",
+            "Adding thumbprint to NSA database",
+            "Alerting NSA",
+            "Calculating time until NSA operatives arrive",
+            "Establishing tracking beacon",
+            "Enabling tracking beacon",
+            "Injecting nanotrackers into beverage"];
+
+        var randomThumbText = "";
+
+        var thumbPressTime = 0;
+        var scanning = false;
+
+		var alreadyConnected=false;
+		var resetTimerSet = false;
+
+        $(function(){
+        	     if(!alreadyConnected){
+        	     
+					 $.ajax({
+						url: "http://localhost:3000/connect",
+						cache: false,
+						crossDomain: true
+					}).done(function(data) {
+								alreadyConnected=true;
+								console.log("connected to machine", data);
+							});
+        	     
+        	     }
+
+
+            setupList();
+            $(".scannerthumb").hide();
+            $("#scanning").hide();
+
+			
+            var thumbTextTimer = null;
+            var greentimeout = null;
+            var sessionStarted = false;
+
+			
+            setInterval(function(){
+                if(scanning || sessionStarted){
+                    $("#instructions").hide();
+                }else{
+                    $("#instructions").toggle();
+                }
+            }, 1000);
+
+            setInterval(function(){
+                if(scanning){
+                    $("#scanning").show();
+                    $("#scanning").text("[ " + randomThumbText.toUpperCase() + " ]");
+                    $(".thumbboxtext").text(pad(Math.floor(Math.random()*1000), 5));
+                }else{
+                    $("#scanning").hide();
+                }
+            }, 100);
+
+            setInterval(function(){
+                $(".thumbbox").hide();
+                $(".thumbboxtext").hide();
+                if(scanning){
+                    var boxNo = Math.floor(Math.random()* 6)+1;
+                    $(".b"+boxNo).show();
+                }
+            }, 500);
+
+            setInterval(function(){ //CHECKING SESSION
+                $.ajax({
+                    url: "http://localhost:3000/checkSession",
+                    cache: false,
+                    crossDomain: true
+                }).done(function(data) {
+                			data = data + '';
+                            sessionStarted = (data.indexOf("true")!=-1);
+                            console.log("-checking session", data.indexOf("true")!=-1);
+                        });
+
+				if(sessionStarted==true){
+					if(!resetTimerSet){
+						resetTimerSet=true;
+						resetTimer = setTimeout(function(){
+							console.log('session time out!');
+							$.ajax({
+								url: "http://localhost:3000/requestendsession",
+								cache: false,
+								crossDomain: true
+							}).done(function(data) {
+										resetTimerSet=false;
+										console.log('session ended - session timed out!');
+									});
+						
+						}, 25000);
+					}
+					
+					
+                    $("#donescan").show();
+                    $(".wrapperbg").hide();
+                    $(".wrapper").hide();
+                    $(".outer").hide();
+                    $("#print").hide();
+                    justDone=false;
+                }else{
+                	if(!justDone){
+                		justDone=true;
+						clearTimeout(resetTimer);
+						clearTimeout(greentimeout);
+						resetTimerSet=false;
+						
+						$(".outercircle").css({"border-color" : "#003c80"});
+						$(".circlebg").css({"border-color" : "#003c80"});
+						$(".circle").show();
+
+						$("#scanning").hide();
+						$(".scannerthumb").hide();
+						$("#c1").attr("data-anim", "");
+						$("#c2").attr("data-anim", "");
+						$("#c3").attr("data-anim", "");
+                		clearInterval(thumbTextTimer);
+                		scanning = false;
+                
+                
+                	}
+                    $("#donescan").hide();
+                    $(".wrapperbg").show();
+                    $(".wrapper").show();
+                    $(".outer").show();
+                    $("#print").show();
+                }
+				
+			}, 500);
+			
+			var justDone=false;
+			var resetTimer = 0;
+			
+            $("#print").mousedown(function(){
+				$("#instructions").hide();
+				if(!scanning){
+
+					setTimeout(function(){ //session is started 1 second early...
+						$.ajax({
+                        url: "http://localhost:3000/startSession",
+                        cache: false,
+                        crossDomain: true
+                    	}).done(function(data) {
+                                console.log("started session", data);
+                            });
+					}, 3000);
+
+					greentimeout = setTimeout(function(){
+                    	$(".outercircle").css({"border-color" : "#00ff00"});
+                    	$(".circlebg").css({"border-color" : "#00ff00"});
+                    	$(".circle").hide();
+                    	$(".scannerthumb").hide();
+                    	scanning=false;
+                	}, 4000);
+
+                	randomThumbText = "SCANNING THUMB";
+                	$("#scanning").text("[ " + "SCANNING THUMB" + " ]");
+
+                	thumbTextTimer = setInterval(function(){
+                	    randomThumbText = thumblist[Math.floor(Math.random()*thumblist.length)];
+                	}, 500);
+
+                	thumbPressTime = Date.now();
+               		$("#instructions").hide();
+              		$(".scannerthumb").show();
+               	 	console.log("mousedown", thumbPressTime);
+                	$("#c1").attr("data-anim", "base wrapper");
+                	$("#c2").attr("data-anim", "base left");
+                	$("#c3").attr("data-anim", "base right");
+                	scanning = true;
+                }
+            });
+
+            /*$(".mmmmmouseup").mouseup(function(){
+
+            });*/
+
+            function setupList(){
+
+                var list2 = [
+                    "Brewing batch 207.14",
+                    "Upgrading syntax",
+                    "Loading direct link library",
+                    "Requesting variable level approval from Paris",
+                    "Checking compatibility matrix",
+                    "Loading peripheral dongle XG1",
+                    "1010001010101001010010101010101010100<span style='color:red;'>2</span>001<br/>&nbsp;&nbsp;&nbsp;&nbsp;" +
+                            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;^ 2 DETECTED. DOES NOT BELONG",
+                    "Photosynthesizing",
+                    "Warning: Warning message detected.",
+                    "Hardening Floppies",
+                    "Rerouting mainframe encryption codes",
+                    "Calculating the vig on this joint",
+                    "Generating NOC list",
+                    "Sharing NOC list",
+                    "Delaying timesheets",
+                    "Generating Peripheral Syntax",
+                    "Defragmenting bottles",
+                    "Linking SCSI Dongle",
+                    "Visualizing BASIC",
+                    "Pegging J’s",
+                    "Waking up Neo",
+                    "↑↑ ↓↓ ←→ ←→ BA",
+                    "Gone Phishing",
+                    "Calculating blood alcohol content",
+                    "Calculating intelligence",
+                    "Playing Tetris in the background...",
+                    "Silently judging you...",
+                    "Lubricating door hinge",
+                    "Uploading NSA webcam feed",
+                    "Bacons",
+                    "言語を日本語に切り替え。英語に戻って切り替え...",
+                    "何スプーンはありません",
+                    "కోలా బేర్స్ పూజ్యమైన ఉంటాయి కానీ వారు తినదగిన కాదు",
+                    "Flopping flip-flops",
+                    "Freeing Willie",
+                    "Sorting megahertz"
+                ];
+
+                setInterval(function(){ //timer in upper right
+                    var d = new Date();
+                    var ms = pad(Math.floor(d.getMilliseconds()/10), 2);
+                    var sec = pad(Math.floor(d.getSeconds()), 2);
+                    var min = pad(Math.floor(d.getMinutes()), 2);
+                    var hr = pad(Math.floor(d.getHours()), 2);
+                    $("#time").text([hr,min,sec,ms].join(":"));
+                }, 10);
+
+                //boston weather
+                //http://www.rssweather.com/zipcode/02101/wx.php
+
+                //beer news
+                //http://feeds.feedburner.com/craftbeercom
+
+                getBeerNews();
+                getTMZ();
+                setInterval(function(){
+                   getTMZ();
+                    getBeerNews();
+                }, 3 * 60 * 1000); //update TMZ/beer news!
+
+                setInterval(function(){
+                    $("#progress").html("");
+                }, 60*60*1000); //clear text every hour to avoid memory leak
+
+                for (var i = 0; i < list2.length; i++) { //random text at random times
+                    addRandomSandersLine(i);
+                }
+
+                function getTMZ(){ //TMZ RSS via yahoo
+                    console.log("getting tmz feed");
+                    $.ajax({
+                        url: "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%27http://www.tmz.com/rss.xml%27%0A&format=json",
+                        crossDomain: true
+                    }).done(function(data) {
+                                var stories = $("<div>"+data.query.results.body.p+"</div>").text().split("TMZ Staff");
+                                for (var i = 0; i < stories.length; i++) {
+                                    stories[i] = stories[i].split("\n")[1] + ""; //only take the 2nd line
+                                    stories[i] = stories[i].replace(/  /g, '');
+                                }
+
+                                for (var i = 0; i < stories.length; i++) { //random text at random times
+                                    addRandomTMZLine(i, stories);
+                                }
+                            });
+
+                    function addRandomTMZLine(j, arr){
+                        setTimeout(function(){
+                            var prog = document.getElementById("progress");
+                            $("#progress").animate({scrollTop : prog.scrollHeight + "px"});
+                            $("#progress").append("<br/><span class='tmz'>CELEB NEWS UPDATE: "+arr[j]+"</span><br/><br/>");
+                        }, 5000+ Math.random()* 10000 + j*8000);
+                    }
+                }
+
+                function getBeerNews(){ //beer RSS via yahoo
+                    console.log("getting beer feed");
+                    $.ajax({
+                        url: "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%27http://feeds.feedburner.com/craftbeercom%27%0A&format=json",
+                        crossDomain: true
+                    }).done(function(data) {
+                                var stories = $("<div>"+data.query.results.body.p+"</div>").text().split("Read More");
+
+                                for (var i = 0; i < stories.length; i++) {
+                                    stories[i] = stories[i].replace(/  /g, '').substr(stories[i].indexOf("/?p=")+3);
+                                }
+                                //console.log(stories);
+                                for (var i = 0; i < stories.length-1; i++) { //random text at random times
+                                    addRandomBeerLine(i, stories);
+                                }
+                            });
+
+                    function addRandomBeerLine(j, arr){
+                        setTimeout(function(){
+                            var prog = document.getElementById("progress");
+                            $("#progress").animate({scrollTop : prog.scrollHeight + "px"});
+                            $("#progress").append("<br/><span class='beernews'>BEER NEWS UPDATE: "+arr[j]+"</span><br/><br/>");
+                        }, 5000+ Math.random()* 10000 + j*8000);
+                    }
+                }
+
+                function addRandomSandersLine(j){
+                    setTimeout(function(){
+                        setInterval(function(){
+                            var prog = document.getElementById("progress");
+
+                            $("#progress").animate({scrollTop : prog.scrollHeight + "px"});
+                            $("#progress").append("<span class='sanders'>"+list2[j]+"</span><br/>");
+                        }, 15*1000+Math.random()*10*1000);
+                    }, j*4000);
+                }
+            }
+        });
+
+        function pad(n, width, z) {
+            z = z || '0';
+            n = n + '';
+            return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+        }
+       </script> 
+    </head>
+    <body>
+        <img src="box1.png" class="thumbbox box1 b1 mouseup"/><div class="thumbboxtext box1text b1">TEXT1</div>
+        <img src="box2.png" class="thumbbox box2 b2 mouseup"/><div class="thumbboxtext box2text b2">TEXT1</div>
+        <img src="box3.png" class="thumbbox box3 b3 mouseup"/><div class="thumbboxtext box3text b3">TEXT1</div>
+        <img src="box4.png" class="thumbbox box4 b4 mouseup"/><div class="thumbboxtext box4text b4">TEXT1</div>
+        <img src="box5.png" class="thumbbox box5 b5 mouseup"/><div class="thumbboxtext box5text b5">TEXT1</div>
+        <img src="box6.png" class="thumbbox box6 b6 mouseup"/><div class="thumbboxtext box6text b6">TEXT1</div>
+        <img src="scanner.gif" class="scannerthumb mouseup"/>
+        <div id="top">
+            <p id="title">ARNIE UPGRADE IN PROGRESS</p>
+            <p id="time">00:00:00:00</p>
+        </div>
+        <div id="progress">
+            <p>PLEASE SCAN THUMB TO ACCESS BEER.</p>
+        </div>
+        <div id="thumbscan">
+            <p id="uppertext">While Arnie is evolving...</p>
+            <p id="instructions">[ SCAN THUMB TO ACCESS BEER ]</p>
+            <p id="donescan">[ INPUT BEVERAGE CODE ]<br><br>||<br>||<br>||<br>||<br>||<br>||<br>V</p>
+            <p id="scanning">[ SCANNING THUMB ]</p>
+            <img id="print" src="thumbprint.png" class="mouseup"/>
+            <div class="wrapper" id="c1">
+                <div class="circle" id="c2"></div>
+                <div class="circle" id="c3"></div>
+            </div>
+            <div class="wrapperbg">
+                <div class="circlebg"></div>
+            </div>
+            <div class="outer">
+                <div class="outercircle"></div>
+            </div>
+    </body>
+</html>
