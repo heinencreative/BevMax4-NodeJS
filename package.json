@@ -4,7 +4,8 @@
   "description": "Beer dispensing robot.",
   "main": "server.js",
   "dependencies": {
-    "express": "~4.10.1"
+    "express": "~4.10.1",
+    "serialport": "~1.4.6"
   },
   "devDependencies": {},
   "scripts": {
