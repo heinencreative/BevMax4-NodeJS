@@ -129,7 +129,6 @@ function sendRequest(req, res){
     console.log('hex',hex);
     if (hex.length > 0) {
         vendSerialPort.write(hex, function(err, results){
-            console.log('err',err);
             if (err) {
                 console.log('sendRequest err',err);
                 res.send(err);
