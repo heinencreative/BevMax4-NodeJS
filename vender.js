@@ -165,9 +165,9 @@ function processMessage(data){
         case 7: //VEND REQUEST
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "00"){ //REQUEST
-                    // decodeChoice(dataArray[5]);
+                    decodeChoice(dataArray[5]);
                 } else {
-                   console.log("Vender: Unknown message: " + data);
+                    console.log("Vender: Unknown message: " + data);
                 }
 
             } else {
@@ -178,6 +178,53 @@ function processMessage(data){
            console.log("Vender: Unknown message: " + data);
             break;
     }
+}
+
+// Convert and log the vend selection code
+function decodeChoice(choice) {
+    var hex = "0x"+choice;
+    var ret = "Vender: They chose ";
+
+    var lc = "";
+    //debug(hex);
+    var n = hex.toString(16);
+    var InBounds = true;
+    //string d = "n = " + ofToString(n);
+    //debug(d);
+    console.log('choice',choice);
+    console.log('hex',hex);
+    console.log('n',n);
+    // if(n < 10){
+    //     ret += "A-" + ofToString(n);
+    //     lc = "A-" + ofToString(n);
+    // } else if(n < 19){
+    //     ret += "B-" + ofToString(n - 9);
+    //     lc = "B-" + ofToString(n - 9);
+    // } else if(n < 28){
+    //     ret += "C-" + ofToString(n - 18);
+    //     lc = "C-" + ofToString(n - 18);
+    // } else if(n < 37) {
+    //     ret += "D-" + ofToString(n - 27);
+    //     lc = "D-" + ofToString(n - 27);
+    // } else if(n < 46){
+    //     ret += "E-" + ofToString(n - 36);
+    //     lc = "E-" + ofToString(n - 36);
+    // } else {
+    //     ret += "out of bounds";
+    //     lc = "error";
+    //     bInBounds = false;
+    // }
+
+    // ret += ".";
+    // ofLog(OF_LOG_VERBOSE, "ofxVending: " + ret);
+
+    // lastChoice = lc;
+
+    // if(bInBounds){
+    //     sendVendApproved();
+    // } else {
+    //     sendVendDeny();
+    // }
 }
 
 function sendRequest(req, res){
