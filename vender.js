@@ -92,8 +92,7 @@ function sendRequestEndSession(callback){
 
 function processMessage(data){
     console.log('processMessage() data: ',data);
-    data.trim(); // Trim whitespace
-    var dataArray = data.toString('utf8').split(" ");
+    var dataArray = data.trim().toString('utf8').split(" ");
     console.log('VENDER: got data', dataArray);
     console.log('dataArray.length: ', dataArray.length);
     if(dataArray.length && sessionStarted){
