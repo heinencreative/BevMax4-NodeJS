@@ -109,12 +109,12 @@ function processMessage(data){
                     VendFailed = false;
                 }
             } else {
-               console.log("Vender: Unknown message: " + _message);
+               console.log("Vender: Unknown message: " + data);
             }
 
             break;
         case 2: //NOT USED
-           console.log("Vender: Unknown message: " + _message);
+           console.log("Vender: Unknown message: " + data);
             break;
         case 3: //READER ENABLE, READER DISABLE, VEND FAILED, VEND COMPLETE
             if(dataArray[0] == "13"){ //VEND
@@ -127,7 +127,7 @@ function processMessage(data){
                     sendEndSession();
                     console.log("Vender: SESSION COMPLETE");
                 } else {
-                   console.log("Vender: Unknown message: " + _message);
+                   console.log("Vender: Unknown message: " + data);
                 }
 
             } else if(dataArray[0] == "14"){ //READER
@@ -138,44 +138,44 @@ function processMessage(data){
                     console.log("Vender: Reader Disable.");
                     // Ready = false;
                 } else {
-                   console.log("Vender: Unknown message: " + _message);
+                   console.log("Vender: Unknown message: " + data);
                 }
 
             } else {
-               console.log("Vender: Unknown message: " + _message);
+               console.log("Vender: Unknown message: " + data);
             }
             break;
         case 4:
-           console.log("Vender: Unknown message: " + _message);
+           console.log("Vender: Unknown message: " + data);
             break;
         case 5: //VEND SUCCESS, VEND FAILED
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "02"){ //SUCCESS
                     console.log("Vender: Vend Success.");
                 } else {
-                   console.log("Vender: Unknown message: " + _message);
+                   console.log("Vender: Unknown message: " + data);
                 }
             } else {
-               console.log("Vender: Unknown message: " + _message);
+               console.log("Vender: Unknown message: " + data);
             }
             break;
         case 6:
-           console.log("Vender: Unknown message: " + _message);
+           console.log("Vender: Unknown message: " + data);
             break;
         case 7: //VEND REQUEST
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "00"){ //REQUEST
                     // decodeChoice(dataArray[5]);
                 } else {
-                   console.log("Vender: Unknown message: " + _message);
+                   console.log("Vender: Unknown message: " + data);
                 }
 
             } else {
-               console.log("Vender: Unknown message: " + _message);
+               console.log("Vender: Unknown message: " + data);
             }
             break;
         default:
-           console.log("Vender: Unknown message: " + _message);
+           console.log("Vender: Unknown message: " + data);
             break;
     }
 }
