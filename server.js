@@ -34,8 +34,11 @@ app.get('/requestendsession', function(req, res){
 	/*});*/
 });
 
-app.get(/^(.+)$/, function(req, res) { res.sendfile('./' + req.params[0]); });
+// Used for debugging cashless device
+app.route('/sendRequest')
+  .get(vender.sendRequest);
 
+app.get(/^(.+)$/, function(req, res) { res.sendfile('./' + req.params[0]); });
 
 app.listen(3000);
 

@@ -123,8 +123,27 @@ function processMessage(data){
     }
 }
 
+function sendRequest(req, res){
+    var hex = [];
+    hex.push(req.query.hex);
+    console.log('hex',hex);
+    if (hex.length > 0) {
+        vendSerialPort.write(hex, function(err, results){
+            console.log('err',err);
+            if (err) {
+                res.send(err);
+            } else {
+                res.send(results);
+            }
+        });
+    } else {
+        res.send('No hex code provided.');
+    }
+}
+
 module.exports.sendRequestEndSession = sendRequestEndSession;
 module.exports.checkSession = checkSession;
 module.exports.connectToVend = connectToVend;
 module.exports.startSession = startSession;
 module.exports.endSession = sendEndSession;
+module.exports.sendRequest = sendRequest;
