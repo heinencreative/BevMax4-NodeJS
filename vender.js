@@ -1,6 +1,8 @@
 var SerialPort = require("serialport").SerialPort;
 
 var vendSerialPort;
+var VendFailed = false;
+var sessionStarted = false;
 
 function connectToVend(onConnected){console.log('VENDER: Setting Serial Options');
     vendSerialPort = new SerialPort("/dev/tty.usbserial-FTCAK7FB", {
@@ -19,8 +21,6 @@ function connectToVend(onConnected){console.log('VENDER: Setting Serial Options'
         onConnected();
     });
 }
-
-var sessionStarted = false;
 
 function startSession(onSessionStartedCallback){
     sessionStarted = false;
@@ -104,9 +104,9 @@ function processMessage(data){
         case 1: //ACK NACK
             if(dataArray[0] == "00"){
                 console.log("Vender: ACK.");
-                if(bVendFailed && !bSession){
-                   console.log("Vender: D: Vend Failed.  Please attempt a new session.");
-                    // bVendFailed = false;
+                if(VendFailed && !sessionStarted){
+                    console.log("Vender: D: Vend Failed.  Please attempt a new session.");
+                    VendFailed = false;
                 }
             } else {
                console.log("Vender: Unknown message: " + _message);
@@ -120,11 +120,11 @@ function processMessage(data){
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "03"){ //FAILED
                    console.log("Vender: Vend Failed.");
-                   // bVendFailed = true;
+                   VendFailed = true;
                 } else if(dataArray[1] == "04"){ //COMPLETE
                     console.log("Vender: Session Complete.");
                     //debug(dataArray);
-                    // sendEndSession();
+                    sendEndSession();
                     console.log("Vender: SESSION COMPLETE");
                 } else {
                    console.log("Vender: Unknown message: " + _message);
@@ -133,10 +133,10 @@ function processMessage(data){
             } else if(dataArray[0] == "14"){ //READER
                 if(dataArray[1] == "01"){ //ENABLE
                     console.log("Vender: Reader Enable.");
-                    // bReady = true;
+                    // Ready = true;
                 } else if(dataArray[1] == "00"){ //DISABLE
                     console.log("Vender: Reader Disable.");
-                    // bReady = false;
+                    // Ready = false;
                 } else {
                    console.log("Vender: Unknown message: " + _message);
                 }
