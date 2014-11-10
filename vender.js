@@ -127,8 +127,10 @@ function sendRequest(req, res){
     var hex = [];
     hex.push(req.query.hex);
     console.log('hex',hex);
+    var data = new Buffer(hex);
+    console.log('sendRequest data',data);
     if (hex.length > 0) {
-        vendSerialPort.write(hex, function(err, results){
+        vendSerialPort.write(data, function(err, results){
             if (err) {
                 console.log('sendRequest err',err);
                 res.send(err);
