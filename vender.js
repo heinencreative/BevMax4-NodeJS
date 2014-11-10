@@ -93,33 +93,90 @@ function sendRequestEndSession(callback){
 function processMessage(data){
     console.log('processMessage() data: ',data);
     var dataArray = data.trim().toString('utf8').split(" ");
-    console.log('VENDER: got data', dataArray);
-    console.log('dataArray.length: ', dataArray.length);
-    if(dataArray.length && sessionStarted){
 
-    	/*if(dataArray.length>=3){
-    		if(dataArray[0]=='14' && dataArray[1]=='01' && dataArray[2] == '15'){
-    			console.log('closing connection.');
-    			vendSerialPort.close();
-
-    		}
-    	}*/
-
-        if(dataArray.length == 8){ //data length of 7 suggested machine is returning user selection as 13 00 00 YY XX XX XX (YY is selection)
-            console.log('VENDER: user selected ', dataArray[3]);
-            if(sessionStarted){sendVendApproved();}
-        }
-        if(dataArray.length == 4){ // length 4 suggests "vended" signal - 13 04 XX (success) or 13 03 XX (failed) -- sent after vendApproved.
-            if(dataArray[0]=='13'){
-                if(dataArray[1]=='04'){ //success
-                    console.log('VENDER: vend success!');
-                    sendEndSession();
-                }else if(dataArray[1]=='03'){ //failure
-                    console.log('VENDER: vend failed!');
-                    sendEndSession();
+    switch (dataArray.length()) {
+        case -1:
+            console.log("Vender: Something is truly fucked up.");
+            break;
+        case 0:
+            console.log("Vender: Something is really fucked up.");
+            break;
+        case 1: //ACK NACK
+            if(dataArray[0] == "00"){
+                console.log("Vender: ACK.");
+                if(bVendFailed && !bSession){
+                   console.log("Vender: D: Vend Failed.  Please attempt a new session.");
+                    // bVendFailed = false;
                 }
+            } else {
+               console.log("Vender: Unknown message: " + _message);
             }
-        }
+
+            break;
+        case 2: //NOT USED
+           console.log("Vender: Unknown message: " + _message);
+            break;
+        case 3: //READER ENABLE, READER DISABLE, VEND FAILED, VEND COMPLETE
+            if(dataArray[0] == "13"){ //VEND
+                if(dataArray[1] == "03"){ //FAILED
+                   console.log("Vender: Vend Failed.");
+                   // bVendFailed = true;
+                } else if(dataArray[1] == "04"){ //COMPLETE
+                    console.log("Vender: Session Complete.");
+                    //debug(dataArray);
+                    // sendEndSession();
+                    console.log("Vender: SESSION COMPLETE");
+                } else {
+                   console.log("Vender: Unknown message: " + _message);
+                }
+
+            } else if(dataArray[0] == "14"){ //READER
+                if(dataArray[1] == "01"){ //ENABLE
+                    console.log("Vender: Reader Enable.");
+                    // bReady = true;
+                } else if(dataArray[1] == "00"){ //DISABLE
+                    console.log("Vender: Reader Disable.");
+                    // bReady = false;
+                } else {
+                   console.log("Vender: Unknown message: " + _message);
+                }
+
+            } else {
+               console.log("Vender: Unknown message: " + _message);
+            }
+            break;
+        case 4:
+           console.log("Vender: Unknown message: " + _message);
+            break;
+        case 5: //VEND SUCCESS, VEND FAILED
+            if(dataArray[0] == "13"){ //VEND
+                if(dataArray[1] == "02"){ //SUCCESS
+                    console.log("Vender: Vend Success.");
+                } else {
+                   console.log("Vender: Unknown message: " + _message);
+                }
+            } else {
+               console.log("Vender: Unknown message: " + _message);
+            }
+            break;
+        case 6:
+           console.log("Vender: Unknown message: " + _message);
+            break;
+        case 7: //VEND REQUEST
+            if(dataArray[0] == "13"){ //VEND
+                if(dataArray[1] == "00"){ //REQUEST
+                    // decodeChoice(dataArray[5]);
+                } else {
+                   console.log("Vender: Unknown message: " + _message);
+                }
+
+            } else {
+               console.log("Vender: Unknown message: " + _message);
+            }
+            break;
+        default:
+           console.log("Vender: Unknown message: " + _message);
+            break;
     }
 }
 
