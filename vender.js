@@ -94,7 +94,7 @@ function processMessage(data){
     console.log('processMessage() data: ',data);
     var dataArray = data.trim().toString('utf8').split(" ");
 
-    switch (dataArray.length()) {
+    switch (dataArray.length) {
         case -1:
             console.log("Vender: Something is truly fucked up.");
             break;
