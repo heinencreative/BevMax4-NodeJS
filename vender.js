@@ -131,8 +131,10 @@ function sendRequest(req, res){
         vendSerialPort.write(hex, function(err, results){
             console.log('err',err);
             if (err) {
+                console.log('sendRequest err',err);
                 res.send(err);
             } else {
+                console.log('sendRequest results',results);
                 res.send(results);
             }
         });

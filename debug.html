@@ -15,7 +15,7 @@
         #sessionStatus {
             color:red;
         }
-        .active {
+        #sessionStatus.active {
             color: green;
         }
     </style>
@@ -89,6 +89,9 @@
                     data: {"hex":hex}
                 }).done(function(data, textStatus, jqXHR){
                     $('#response').text(data);
+                    console.log('data',data);
+                    console.log('jqXHR',jqXHR);
+                    console.log('textStatus',textStatus);
                 }).fail(function(jqXHR, textStatus, errorThrown){
                     console.log('jqXHR',jqXHR);
                     console.log('textStatus',textStatus);
