@@ -4,15 +4,15 @@ var vender = require('./vender.js');
 
 app.get('/connect', function(req, res){
 	res.send('connection happens when session starts...');
-    //vender.setup(function(){console.log("connected to vending machine!");});
+  vender.setup(function(){console.log("connected to vending machine!");});
 });
 
 app.get('/startsession', function(req, res){
-	vender.setup(function(){console.log("connected to vending machine!");
+	// vender.setup(function(){console.log("connected to vending machine!");
 		vender.startSession(function(){console.log("session started! ready for selection...");
 			res.send('done');
 		});
-	});
+	// });
 });
 
 app.get('/checksession', function(req, res){

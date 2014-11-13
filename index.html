@@ -7,9 +7,9 @@
         <title>Arnie++</title>
         <meta name="description" content="Beer Vending Machine">
         <link rel="stylesheet" href="main.css">
-        
+
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		
+
 		<script>
 
         var thumblist = [
@@ -42,8 +42,9 @@
 		var resetTimerSet = false;
 
         $(function(){
+            // TODO shouln't be checking connection here, vender.js handles this
         	     if(!alreadyConnected){
-        	     
+
 					 $.ajax({
 						url: "http://localhost:3000/connect",
 						cache: false,
@@ -52,7 +53,7 @@
 								alreadyConnected=true;
 								console.log("connected to machine", data);
 							});
-        	     
+
         	     }
 
 
@@ -60,12 +61,12 @@
             $(".scannerthumb").hide();
             $("#scanning").hide();
 
-			
+
             var thumbTextTimer = null;
             var greentimeout = null;
             var sessionStarted = false;
 
-			
+
             setInterval(function(){
                 if(scanning || sessionStarted){
                     $("#instructions").hide();
@@ -93,6 +94,7 @@
                 }
             }, 500);
 
+            // TODO Front end code should not have to check session
             setInterval(function(){ //CHECKING SESSION
                 $.ajax({
                     url: "http://localhost:3000/checkSession",
@@ -110,18 +112,18 @@
 						resetTimer = setTimeout(function(){
 							console.log('session time out!');
 							$.ajax({
-								url: "http://localhost:3000/requestendsession",
+								url: "http://localhost:3000/requestendsession", // TODO this doesnt actually reset the session, only sends request
 								cache: false,
 								crossDomain: true
 							}).done(function(data) {
 										resetTimerSet=false;
 										console.log('session ended - session timed out!');
 									});
-						
+
 						}, 25000);
 					}
-					
-					
+
+
                     $("#donescan").show();
                     $(".wrapperbg").hide();
                     $(".wrapper").hide();
@@ -134,7 +136,7 @@
 						clearTimeout(resetTimer);
 						clearTimeout(greentimeout);
 						resetTimerSet=false;
-						
+
 						$(".outercircle").css({"border-color" : "#003c80"});
 						$(".circlebg").css({"border-color" : "#003c80"});
 						$(".circle").show();
@@ -146,8 +148,8 @@
 						$("#c3").attr("data-anim", "");
                 		clearInterval(thumbTextTimer);
                 		scanning = false;
-                
-                
+
+
                 	}
                     $("#donescan").hide();
                     $(".wrapperbg").show();
@@ -155,12 +157,12 @@
                     $(".outer").show();
                     $("#print").show();
                 }
-				
+
 			}, 500);
-			
+
 			var justDone=false;
 			var resetTimer = 0;
-			
+
             $("#print").mousedown(function(){
 				$("#instructions").hide();
 				if(!scanning){
@@ -347,7 +349,7 @@
             n = n + '';
             return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
         }
-       </script> 
+       </script>
     </head>
     <body>
         <img src="box1.png" class="thumbbox box1 b1 mouseup"/><div class="thumbboxtext box1text b1">TEXT1</div>
