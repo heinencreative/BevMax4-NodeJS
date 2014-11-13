@@ -185,7 +185,7 @@ function startSession(){
     };
 }
 
-function sendBeginSession(onSessionStartedCallback){
+function sendBeginSession(){
     console.log('session starting...');
     if (machineReady) {
         vendSerialPort.write([0x03, 0x00, 0x28], function(err, results){
@@ -193,7 +193,6 @@ function sendBeginSession(onSessionStartedCallback){
             console.log('VENDER: session started!');
             sessionStarted = true;
             VendFailed = false;
-            onSessionStartedCallback();
         });
     } else {
         console.log('Vender: Machine is not ready. Aborting');
