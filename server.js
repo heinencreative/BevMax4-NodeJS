@@ -2,14 +2,13 @@ var express = require('express');
 var app = express();
 var vender = require('./vender.js');
 
-
 app.get('/connect', function(req, res){
 	res.send('connection happens when session starts...');
-    //vender.connectToVend(function(){console.log("connected to vending machine!");});
+    //vender.setup(function(){console.log("connected to vending machine!");});
 });
 
 app.get('/startsession', function(req, res){
-	vender.connectToVend(function(){console.log("connected to vending machine!");
+	vender.setup(function(){console.log("connected to vending machine!");
 		vender.startSession(function(){console.log("session started! ready for selection...");
 			res.send('done');
 		});
@@ -27,7 +26,7 @@ app.get('/endsession', function(req, res){
 });
 
 app.get('/requestendsession', function(req, res){
-	/*vender.connectToVend(function(){console.log("connected to vending machine!");*/
+	/*vender.setup(function(){console.log("connected to vending machine!");*/
 		vender.sendRequestEndSession(function(){
 		res.send('done');
 		});

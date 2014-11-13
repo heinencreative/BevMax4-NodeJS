@@ -1,92 +1,39 @@
 var SerialPort = require("serialport").SerialPort;
 
-var vendSerialPort;
-var VendFailed = false;
-var sessionStarted = false;
+var vendSerialPort,
+    VendFailed = false,
+    sessionStarted = false,
+    machineReady = false;
 
-function connectToVend(onConnected){console.log('VENDER: Setting Serial Options');
+function setup(onConnected){
+    console.log('VENDER: Setting Up Serial Options');
+
     vendSerialPort = new SerialPort("/dev/tty.usbserial-FTCAK7FB", {
         baudRate: 9600,
         dataBits: 8,
         stopBits: 1,
         bufferSize: 10000,
         parser: require("serialport").parsers.readline("\n\r")
+    },false);
+
+    vendSerialPort.open( function (error) {
+        if (error) {
+            console.log('Vender: Failed to open serial port: '+error);
+        } else{
+            console.log('VENDER: serial open');
+            vendSerialPort.on('data', function(data) {
+                processMessage(data);
+            });
+            onConnected();
+            // Send reset after making connection.
+            sendReset();
+        }
     });
 
-    vendSerialPort.on("open", function () {
-        vendSerialPort.on('data', function(data) {
-            processMessage(data);
-        });
-        console.log('VENDER: serial open');
-        onConnected();
-    });
-}
-
-function startSession(onSessionStartedCallback){
-    sessionStarted = false;
-    console.log('session starting...');
-    vendSerialPort.write([0x03, 0x00, 0x28], onSessionStarted); //START SESSION WITH $2 (0x28 -> 0x14 for $1)
-    function onSessionStarted(err, results){
-        console.log('VENDER: session started!');
-        sessionStarted = true;
-        onSessionStartedCallback();
-    }
 }
 
 function checkSession(){
 	return sessionStarted;
-}
-
-function sendVendApproved(){
-    console.log('VENDER: sending vend approved...');
-    vendSerialPort.write([0x05, 0x00, 0x07], function(err, results){
-    });
-}
-
-function sendEndSession(callback){
-    console.log('VENDER: sending end session...');
-    vendSerialPort.write([0x07], function(err, results){
-        console.log('VENDER: session ended.');
-        sessionStarted = false;
-        setTimeout(function(){
-        	vendSerialPort.close();console.log('connection closed.');
-        }, 2000);
-
-        if(callback){
-		callback();}
-    });
-}
-
-
-function sendRequestEndSession(callback){
-    console.log('VENDER: Trying to cancel session...');
-    vendSerialPort.write([0x06], function(err, results){
-        console.log('VENDER: 06-Vend Denied sent.');
-    });
-    vendSerialPort.write([0x08], function(err, results){
-        console.log('VENDER: 08-Reader Cancel sent.');
-    });
-    vendSerialPort.write([0x13], function(err, results){
-        console.log('VENDER: 13-Data Entry Cancel sent.');
-    });
-    vendSerialPort.write([0x00], function(err, results){
-        console.log('VENDER: 00-Just Reset sent.');
-        /*sessionStarted = false;*/
-		console.log('VENDER: SessionStarted set to False');
-
-		setTimeout(function(){
-
-			vendSerialPort.write([0x07], function(err, results){
-			console.log('VENDER: 07-End Session sent.');
-			sessionStarted = false;
-			});
-
-		}, 2000);
-
-
-        if(callback){
-		callback();}
-    });
 }
 
 
@@ -101,7 +48,7 @@ function processMessage(data){
         case 0:
             console.log("Vender: Something is really fucked up.");
             break;
-        case 1: //ACK NACK
+        case 1: //Acknowledged
             if(dataArray[0] == "00"){
                 console.log("Vender: ACK.");
                 if(VendFailed && !sessionStarted){
@@ -133,10 +80,10 @@ function processMessage(data){
             } else if(dataArray[0] == "14"){ //READER
                 if(dataArray[1] == "01"){ //ENABLE
                     console.log("Vender: Reader Enable.");
-                    // Ready = true;
+                    machineReady = true;
                 } else if(dataArray[1] == "00"){ //DISABLE
                     console.log("Vender: Reader Disable.");
-                    // Ready = false;
+                    machineReady = false;
                 } else {
                    console.log("Vender: Unknown message: " + data);
                 }
@@ -186,47 +133,106 @@ function decodeChoice(choice) {
     var ret = "Vender: They chose ";
 
     var lc = "";
-    //debug(hex);
-    var n = hex.toString(16);
-    var InBounds = true;
-    //string d = "n = " + ofToString(n);
-    //debug(d);
+    var n = parseInt(hex,16);
+    var inBounds = true;
+
     console.log('choice',choice);
     console.log('hex',hex);
     console.log('n',n);
-    // if(n < 10){
-    //     ret += "A-" + ofToString(n);
-    //     lc = "A-" + ofToString(n);
-    // } else if(n < 19){
-    //     ret += "B-" + ofToString(n - 9);
-    //     lc = "B-" + ofToString(n - 9);
-    // } else if(n < 28){
-    //     ret += "C-" + ofToString(n - 18);
-    //     lc = "C-" + ofToString(n - 18);
-    // } else if(n < 37) {
-    //     ret += "D-" + ofToString(n - 27);
-    //     lc = "D-" + ofToString(n - 27);
-    // } else if(n < 46){
-    //     ret += "E-" + ofToString(n - 36);
-    //     lc = "E-" + ofToString(n - 36);
-    // } else {
-    //     ret += "out of bounds";
-    //     lc = "error";
-    //     bInBounds = false;
-    // }
+    if(n < 10){
+        ret += "A-" + n;
+        lc = "A-" + n;
+    } else if(n < 19){
+        ret += "B-" + (n - 9);
+        lc = "B-" + (n - 9);
+    } else if(n < 28){
+        ret += "C-" + (n - 18);
+        lc = "C-" + (n - 18);
+    } else if(n < 37) {
+        ret += "D-" + (n - 27);
+        lc = "D-" + (n - 27);
+    } else if(n < 46){
+        ret += "E-" + (n - 36);
+        lc = "E-" + (n - 36);
+    } else {
+        ret += "out of bounds";
+        lc = "error";
+        inBounds = false;
+    }
 
-    // ret += ".";
-    // ofLog(OF_LOG_VERBOSE, "ofxVending: " + ret);
+    ret += ".";
+    console.log("Vender: " + ret);
 
     // lastChoice = lc;
 
-    // if(bInBounds){
-    //     sendVendApproved();
-    // } else {
-    //     sendVendDeny();
-    // }
+    if(inBounds){
+        sendVendApproved();
+    } else {
+        sendVendDeny();
+    }
 }
 
+function startSession(){
+    if (machineReady && vendSerialPort) {
+        sendBeginSession();
+    } else {
+        console.log('Vender: Cannot start session, not ready.');
+    };
+}
+
+function sendBeginSession(onSessionStartedCallback){
+    console.log('session starting...');
+    if (machineReady) {
+        vendSerialPort.write([0x03, 0x00, 0x28], function(err, results){
+            //START SESSION WITH $2 (0x28 -> 0x14 for $1)
+            console.log('VENDER: session started!');
+            sessionStarted = true;
+            onSessionStartedCallback();
+        });
+    } else {
+        console.log('Vender: Machine is not ready. Aborting');
+    }
+}
+
+function sendVendApproved(){
+    vendSerialPort.write([0x05, 0x00, 0x07], function(err, results){
+        console.log('VENDER: sent vend approved...');
+    });
+}
+
+function sendEndSession(callback){
+    console.log('VENDER: sending end session...');
+    vendSerialPort.write([0x07], function(err, results){
+        console.log('VENDER: session ended.');
+        sessionStarted = false;
+        if(callback){
+        callback();}
+    });
+}
+
+function sendRequestEndSession(callback){
+    console.log('VENDER: Trying to cancel session...');
+    vendSerialPort.write([0x04], function(err, results){
+        console.log('VENDER: 06-Vend Session Cancel Request sent.');
+        sessionStarted = false;
+    });
+}
+
+function sendReset(){
+    console.log('VENDER: Trying to reset session...');
+    vendSerialPort.write([0x00], function(err, results){
+        console.log('VENDER: 00- Just Reset sent.');
+        sessionStarted = false;
+    });
+}
+
+function sendVendDeny(){
+    vendSerialPort.write([0x06], function(err, results){
+        console.log('VENDER: 06-Vend Denied sent.');
+    });
+}
+
+// sendRequest() is used to send debug requests, not used in production app
 function sendRequest(req, res){
     var hex = [];
     hex.push(req.query.hex);
@@ -250,7 +256,7 @@ function sendRequest(req, res){
 
 module.exports.sendRequestEndSession = sendRequestEndSession;
 module.exports.checkSession = checkSession;
-module.exports.connectToVend = connectToVend;
+module.exports.setup = setup;
 module.exports.startSession = startSession;
 module.exports.endSession = sendEndSession;
 module.exports.sendRequest = sendRequest;
