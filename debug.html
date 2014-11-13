@@ -44,24 +44,39 @@
 
             function toggleSession() {
                 // Turn on session
+                // if (!sessionStarted) {
+                //     $.ajax({
+                //         url: "/startsession",
+                //         cache: false
+                //     }).done(function(data) {
+                //         sessionStarted = true;
+                //         $('#sessionStatus').addClass('active').text('Session Active');
+                //         console.log("started session", data);
+                //     });
+                // } else {
+                //     $.ajax({
+                //         url: "/endsession",
+                //         cache: false
+                //     }).done(function(data) {
+                //         sessionStarted = false;
+                //         $('#sessionStatus').removeClass('active').text('Session Inactive');
+                //         console.log("started session", data);
+                //     });
+                // };
                 if (!sessionStarted) {
-                    $.ajax({
-                        url: "/startsession",
-                        cache: false
-                    }).done(function(data) {
-                        sessionStarted = true;
-                        $('#sessionStatus').addClass('active').text('Session Active');
-                        console.log("started session", data);
-                    });
+                    $.get("/startsession")
+                        .done(function(data) {
+                            sessionStarted = true;
+                            $('#sessionStatus').addClass('active').text('Session Active');
+                            console.log("started session", data);
+                        });
                 } else {
-                    $.ajax({
-                        url: "/endsession",
-                        cache: false
-                    }).done(function(data) {
-                        sessionStarted = false;
-                        $('#sessionStatus').removeClass('active').text('Session Inactive');
-                        console.log("started session", data);
-                    });
+                    $.get("/endsession")
+                        .done(function(data) {
+                            sessionStarted = false;
+                            $('#sessionStatus').removeClass('active').text('Session Inactive');
+                            console.log("started session", data);
+                        });
                 };
             }
 
