@@ -47,8 +47,7 @@
                 if (!sessionStarted) {
                     $.ajax({
                         url: "/startsession",
-                        cache: false,
-                        crossDomain: true
+                        cache: false
                     }).done(function(data) {
                         sessionStarted = true;
                         $('#sessionStatus').addClass('active').text('Session Active');
@@ -57,8 +56,7 @@
                 } else {
                     $.ajax({
                         url: "/endsession",
-                        cache: false,
-                        crossDomain: true
+                        cache: false
                     }).done(function(data) {
                         sessionStarted = false;
                         $('#sessionStatus').removeClass('active').text('Session Inactive');
