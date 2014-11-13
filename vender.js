@@ -26,6 +26,7 @@ function setup(onConnected){
             });
             onConnected();
             // Send reset after making connection.
+            machineReady = true; // TODO remove this, only used for debugging
             // sendReset();
         }
     });
