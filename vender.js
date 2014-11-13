@@ -26,7 +26,7 @@ function setup(onConnected){
             });
             onConnected();
             // Send reset after making connection.
-            sendReset();
+            // sendReset();
         }
     });
 
@@ -191,6 +191,7 @@ function sendBeginSession(onSessionStartedCallback){
             //START SESSION WITH $2 (0x28 -> 0x14 for $1)
             console.log('VENDER: session started!');
             sessionStarted = true;
+            VendFailed = false;
             onSessionStartedCallback();
         });
     } else {
