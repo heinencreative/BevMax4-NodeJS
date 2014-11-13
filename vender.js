@@ -137,8 +137,10 @@ function decodeChoice(choice) {
     var inBounds = true;
 
     console.log('choice',choice);
+    console.log('choice typeof', typeof choice);
     console.log('hex',hex);
     console.log('n',n);
+    console.log('n lt 10',n < 10);
     if(n < 10){
         ret += "A-" + n;
         lc = "A-" + n;
