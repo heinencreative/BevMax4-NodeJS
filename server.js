@@ -9,7 +9,8 @@ app.get('/connect', function(req, res){
 
 app.get('/startsession', function(req, res){
 	// vender.setup(function(){console.log("connected to vending machine!");
-		vender.startSession(function(){console.log("session started! ready for selection...");
+		vender.startSession(function(){
+      console.log("session started! ready for selection...");
 			res.send('done');
 		});
 	// });
@@ -20,15 +21,16 @@ app.get('/checksession', function(req, res){
 });
 
 app.get('/endsession', function(req, res){
-    vender.endSession(function(){console.log("session ended, connection closed");
-    res.send('done');
+    vender.endSession(function(){
+      console.log("session ended, connection closed");
+      res.send('done');
 	});
 });
 
 app.get('/requestendsession', function(req, res){
 	/*vender.setup(function(){console.log("connected to vending machine!");*/
 		vender.sendRequestEndSession(function(){
-		res.send('done');
+		  res.send('done');
 		});
 	/*});*/
 });
