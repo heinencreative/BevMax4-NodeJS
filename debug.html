@@ -31,7 +31,8 @@
 
                 $.ajax({
                     url: "/connect",
-                    cache: false
+                    cache: false,
+                    type: 'GET'
                 }).done(function(data) {
                     alreadyConnected=true;
                     console.log("connected to machine", data);
@@ -51,7 +52,8 @@
                 if (!sessionStarted) {
                     $.ajax({
                         url: "/startsession",
-                        cache: false
+                        cache: false,
+                        type: 'GET'
                     }).done(function(data) {
                         sessionStarted = true;
                         $('#sessionStatus').addClass('active').text('Session Active');
@@ -60,7 +62,8 @@
                 } else {
                     $.ajax({
                         url: "/endsession",
-                        cache: false
+                        cache: false,
+                        type: 'GET'
                     }).done(function(data) {
                         sessionStarted = false;
                         $('#sessionStatus').removeClass('active').text('Session Inactive');
