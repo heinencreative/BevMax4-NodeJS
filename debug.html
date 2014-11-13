@@ -29,15 +29,19 @@
 
             if(!alreadyConnected){
 
-                $.ajax({
-                    url: "/connect",
-                    cache: false,
-                    crossDomain: true
-                }).done(function(data) {
-                    alreadyConnected=true;
-                    console.log("connected to machine", data);
-                });
-
+                // $.ajax({
+                //     url: "/connect",
+                //     cache: false,
+                //     crossDomain: true
+                // }).done(function(data) {
+                //     alreadyConnected=true;
+                //     console.log("connected to machine", data);
+                // });
+                $.get("/connect")
+                    .done(function(data) {
+                        alreadyConnected=true;
+                        console.log("connected to machine", data);
+                    });
             }
 
             $('#sessionToggle').click(toggleSession);
