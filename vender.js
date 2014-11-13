@@ -170,10 +170,12 @@ function decodeChoice(choice) {
 
 function startSession(){
     console.log('startSession machineReady: ', machineReady);
-    if (machineReady && vendSerialPort) {
+    console.log('startSession sessionStarted: ', sessionStarted);
+    // Begin session only if machine is ready an no session has already been started
+    if (machineReady && !sessionStarted) {
         sendBeginSession();
     } else {
-        console.log('Vender: Cannot start session, not ready.');
+        console.log('Vender: Cannot start session, not ready or session already active.');
     };
 }
 

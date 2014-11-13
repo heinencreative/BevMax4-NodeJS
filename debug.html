@@ -72,14 +72,14 @@
                         .done(function(data) {
                             sessionStarted = true;
                             $('#sessionStatus').addClass('active').text('Session Active');
-                            console.log("started session", data);
+                            console.log("debug.html: started session", data);
                         });
                 } else {
                     $.get("/endsession")
                         .done(function(data) {
                             sessionStarted = false;
                             $('#sessionStatus').removeClass('active').text('Session Inactive');
-                            console.log("started session", data);
+                            console.log("debug.html: ended session", data);
                         });
                 };
             }
