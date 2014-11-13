@@ -1,7 +1,7 @@
 var SerialPort = require("serialport").SerialPort;
 
 var vendSerialPort,
-    VendFailed = false,
+    vendFailed = false,
     sessionStarted = false,
     machineReady = false;
 
@@ -38,7 +38,6 @@ function checkSession(){
 
 
 function processMessage(data){
-    console.log('processMessage() data: ',data);
     var dataArray = data.trim().toString('utf8').split(" ");
 
     switch (dataArray.length) {
@@ -51,9 +50,9 @@ function processMessage(data){
         case 1: //Acknowledged
             if(dataArray[0] == "00"){
                 console.log("Vender: ACK.");
-                if(VendFailed && !sessionStarted){
+                if(vendFailed && !sessionStarted){
                     console.log("Vender: D: Vend Failed.  Please attempt a new session.");
-                    VendFailed = false;
+                    vendFailed = false;
                 }
             } else {
                console.log("Vender: Unknown message: " + data);
@@ -67,7 +66,7 @@ function processMessage(data){
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "03"){ //FAILED
                    console.log("Vender: Vend Failed.");
-                   VendFailed = true;
+                   vendFailed = true;
                 } else if(dataArray[1] == "04"){ //COMPLETE
                     console.log("Vender: Session Complete.");
                     //debug(dataArray);
@@ -136,11 +135,6 @@ function decodeChoice(choice) {
     var n = parseInt(hex,16);
     var inBounds = true;
 
-    console.log('choice',choice);
-    console.log('choice typeof', typeof choice);
-    console.log('hex',hex);
-    console.log('n',n);
-    console.log('n lt 10',n < 10);
     if(n < 10){
         ret += "A-" + n;
         lc = "A-" + n;
@@ -190,7 +184,7 @@ function sendBeginSession(){
             //START SESSION WITH $2 (0x28 -> 0x14 for $1)
             console.log('VENDER: session started!');
             sessionStarted = true;
-            VendFailed = false;
+            vendFailed = false;
         });
     } else {
         console.log('Vender: Machine is not ready. Aborting');
@@ -198,6 +192,7 @@ function sendBeginSession(){
 }
 
 function sendVendApproved(){
+    console.log('VENDER: Trying to approve vend...');
     vendSerialPort.write([0x05, 0x00, 0x07], function(err, results){
         console.log('VENDER: sent vend approved...');
     });
@@ -230,6 +225,7 @@ function sendReset(){
 }
 
 function sendVendDeny(){
+    console.log('VENDER: Trying to deny vend...');
     vendSerialPort.write([0x06], function(err, results){
         console.log('VENDER: 06-Vend Denied sent.');
     });
