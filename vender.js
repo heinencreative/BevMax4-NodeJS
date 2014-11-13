@@ -175,6 +175,8 @@ function decodeChoice(choice) {
 }
 
 function startSession(){
+    console.log('startSession machineReady: ', machineReady);
+    console.log('vendSerialPort', vendSerialPort);
     if (machineReady && vendSerialPort) {
         sendBeginSession();
     } else {
