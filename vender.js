@@ -39,7 +39,6 @@ function checkSession(){
 
 function processMessage(data){
     var dataArray = data.trim().toString('utf8').split(" ");
-    console.log('dataArray: ',dataArray);
 
     switch (dataArray.length) {
         case -1:
