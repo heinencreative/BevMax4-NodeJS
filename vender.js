@@ -56,7 +56,7 @@ function processMessage(data){
                 console.log('sessionStarted:',sessionStarted);
 
                 if(vendFailed && !sessionStarted){
-                    console.log("VMC: Vend Failed.  Please attempt a new session.");
+                    console.log("VMC: Vend Failed. Please attempt a new session.");
                     vendFailed = false;
                 }
             } else {
@@ -167,7 +167,7 @@ function decodeChoice(choice) {
     // lastChoice = lc;
 
     if(inBounds){
-        sendVendApproved();
+        // sendVendApproved();
     } else {
         sendVendDeny();
     }
@@ -201,7 +201,7 @@ function sendBeginSession(){
 
 function sendVendApproved(){
     console.log('vender.js: Trying to approve vend...');
-    vendSerialPort.write([0x05, 0x00, 0x07], function(){
+    vendSerialPort.write([0x05, 0x00, 0x00], function(){
         console.log('PC2MDB: sent vend approved...');
     });
 }
