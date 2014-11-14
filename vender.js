@@ -51,8 +51,12 @@ function processMessage(data){
         case 1: //Acknowledged
             if(dataArray[0] == "00"){
                 console.log("VMC: ACK.");
+
+                console.log('vendFailed:',vendFailed);
+                console.log('sessionStarted:',sessionStarted);
+
                 if(vendFailed && !sessionStarted){
-                    console.log("VMC: D: Vend Failed.  Please attempt a new session.");
+                    console.log("VMC: Vend Failed.  Please attempt a new session.");
                     vendFailed = false;
                 }
             } else {
@@ -158,7 +162,7 @@ function decodeChoice(choice) {
     }
 
     ret += ".";
-    console.log("VMC: " + ret);
+    console.log(ret);
 
     // lastChoice = lc;
 
