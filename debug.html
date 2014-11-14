@@ -63,6 +63,18 @@
                     console.log("debug.html: ended session", data);
                 });
             });
+            
+            $('#requestEndSession').click(function(){
+                $.ajax({
+                    url: "/requestendsession",
+                    cache: false,
+                    type: 'GET'
+                }).done(function(data) {
+                    sessionStarted = false;
+                    // $('#sessionStatus').removeClass('active').text('Inactive');
+                    console.log("debug.html: request ended session", data);
+                });
+            });            
 
             // Submit the debug form
             $('#debugForm').submit(function(event){
@@ -97,6 +109,7 @@
 <!--         <h2>Session</h2>
         <p><strong>The session is currently: </strong><span id="sessionStatus">Inactive</span></p> -->
         <p><button id="startSession">Start Session</button></p>
+        <p><button id="requestEndSession">Request End Session</button></p>
         <p><button id="endSession">End Session</button></p>
         <form id="debugForm">
             <input type="text" name="hex">

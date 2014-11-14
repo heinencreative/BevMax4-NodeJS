@@ -39,7 +39,6 @@ function checkSession(){
 
 function processMessage(data){
     var dataArray = data.trim().toString('utf8').split(" ");
-    console.log('vender.js: processMessage',data);
 
     switch (dataArray.length) {
         case -1:
@@ -51,9 +50,6 @@ function processMessage(data){
         case 1: //Acknowledged
             if(dataArray[0] == "00"){
                 console.log("VMC: ACK.");
-
-                console.log('vendFailed:',vendFailed);
-                console.log('sessionStarted:',sessionStarted);
 
                 if(vendFailed && !sessionStarted){
                     console.log("VMC: Vend Failed. Please attempt a new session.");
@@ -70,13 +66,12 @@ function processMessage(data){
         case 3: //READER ENABLE, READER DISABLE, VEND FAILED, VEND COMPLETE
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "03"){ //FAILED
-                   console.log("VMC: Vend Failed.");
+                   console.log("VMC: Vend Failed (e.g. empty row selected).");
                    vendFailed = true;
                 } else if(dataArray[1] == "04"){ //COMPLETE
                     console.log("VMC: Session Complete.");
                     //debug(dataArray);
                     sendEndSession();
-                    console.log("VMC: SESSION COMPLETE");
                 } else {
                    console.log("VMC: Unknown message: " + data);
                 }
@@ -167,7 +162,7 @@ function decodeChoice(choice) {
     // lastChoice = lc;
 
     if(inBounds){
-        // sendVendApproved();
+        sendVendApproved();
     } else {
         sendVendDeny();
     }
@@ -201,7 +196,7 @@ function sendBeginSession(){
 
 function sendVendApproved(){
     console.log('vender.js: Trying to approve vend...');
-    vendSerialPort.write([0x05, 0x00, 0x00], function(){
+    vendSerialPort.write([0x05], function(){
         console.log('PC2MDB: sent vend approved...');
     });
 }
