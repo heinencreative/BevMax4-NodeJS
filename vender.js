@@ -6,7 +6,7 @@ var vendSerialPort,
     machineReady = false;
 
 function setup(onConnected){
-    console.log('VENDER: Setting Up Serial Options');
+    console.log('vender.js: Setting Up Serial Options');
 
     vendSerialPort = new SerialPort("/dev/tty.usbserial-FTCAK7FB", {
         baudRate: 9600,
@@ -18,9 +18,9 @@ function setup(onConnected){
 
     vendSerialPort.open( function (error) {
         if (error) {
-            console.log('Vender: Failed to open serial port: '+error);
+            console.log('vender.js: Failed to open serial port: '+error);
         } else{
-            console.log('VENDER: serial open');
+            console.log('vender.js: serial open');
             vendSerialPort.on('data', function(data) {
                 processMessage(data);
             });
@@ -39,89 +39,90 @@ function checkSession(){
 
 function processMessage(data){
     var dataArray = data.trim().toString('utf8').split(" ");
+    console.log('vender.js: processMessage',data);
 
     switch (dataArray.length) {
         case -1:
-            console.log("Vender: Something is truly fucked up.");
+            console.log("VMC: Something is truly fucked up.");
             break;
         case 0:
-            console.log("Vender: Something is really fucked up.");
+            console.log("VMC: Something is really fucked up.");
             break;
         case 1: //Acknowledged
             if(dataArray[0] == "00"){
-                console.log("Vender: ACK.");
+                console.log("VMC: ACK.");
                 if(vendFailed && !sessionStarted){
-                    console.log("Vender: D: Vend Failed.  Please attempt a new session.");
+                    console.log("VMC: D: Vend Failed.  Please attempt a new session.");
                     vendFailed = false;
                 }
             } else {
-               console.log("Vender: Unknown message: " + data);
+               console.log("VMC: Unknown message: " + data);
             }
 
             break;
         case 2: //NOT USED
-           console.log("Vender: Unknown message: " + data);
+           console.log("VMC: Unknown message: " + data);
             break;
         case 3: //READER ENABLE, READER DISABLE, VEND FAILED, VEND COMPLETE
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "03"){ //FAILED
-                   console.log("Vender: Vend Failed.");
+                   console.log("VMC: Vend Failed.");
                    vendFailed = true;
                 } else if(dataArray[1] == "04"){ //COMPLETE
-                    console.log("Vender: Session Complete.");
+                    console.log("VMC: Session Complete.");
                     //debug(dataArray);
                     sendEndSession();
-                    console.log("Vender: SESSION COMPLETE");
+                    console.log("VMC: SESSION COMPLETE");
                 } else {
-                   console.log("Vender: Unknown message: " + data);
+                   console.log("VMC: Unknown message: " + data);
                 }
 
             } else if(dataArray[0] == "14"){ //READER
                 if(dataArray[1] == "01"){ //ENABLE
-                    console.log("Vender: Reader Enable.");
+                    console.log("VMC: Reader Enable.");
                     machineReady = true;
                 } else if(dataArray[1] == "00"){ //DISABLE
-                    console.log("Vender: Reader Disable.");
+                    console.log("VMC: Reader Disable.");
                     machineReady = false;
                 } else {
-                   console.log("Vender: Unknown message: " + data);
+                   console.log("VMC: Unknown message: " + data);
                 }
 
             } else {
-               console.log("Vender: Unknown message: " + data);
+               console.log("VMC: Unknown message: " + data);
             }
             break;
         case 4:
-           console.log("Vender: Unknown message: " + data);
+           console.log("VMC: Unknown message: " + data);
             break;
         case 5: //VEND SUCCESS, VEND FAILED
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "02"){ //SUCCESS
-                    console.log("Vender: Vend Success.");
+                    console.log("VMC: Vend Success.");
                 } else {
-                   console.log("Vender: Unknown message: " + data);
+                   console.log("VMC: Unknown message: " + data);
                 }
             } else {
-               console.log("Vender: Unknown message: " + data);
+               console.log("VMC: Unknown message: " + data);
             }
             break;
         case 6:
-           console.log("Vender: Unknown message: " + data);
+           console.log("VMC: Unknown message: " + data);
             break;
         case 7: //VEND REQUEST
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "00"){ //REQUEST
                     decodeChoice(dataArray[5]);
                 } else {
-                    console.log("Vender: Unknown message: " + data);
+                    console.log("VMC: Unknown message: " + data);
                 }
 
             } else {
-               console.log("Vender: Unknown message: " + data);
+               console.log("VMC: Unknown message: " + data);
             }
             break;
         default:
-           console.log("Vender: Unknown message: " + data);
+           console.log("VMC: Unknown message: " + data);
             break;
     }
 }
@@ -129,7 +130,7 @@ function processMessage(data){
 // Convert and log the vend selection code
 function decodeChoice(choice) {
     var hex = "0x"+choice;
-    var ret = "Vender: They chose ";
+    var ret = "VMC: They chose ";
 
     var lc = "";
     var n = parseInt(hex,16);
@@ -157,7 +158,7 @@ function decodeChoice(choice) {
     }
 
     ret += ".";
-    console.log("Vender: " + ret);
+    console.log("VMC: " + ret);
 
     // lastChoice = lc;
 
@@ -175,35 +176,36 @@ function startSession(){
     if (machineReady && !sessionStarted) {
         sendBeginSession();
     } else {
-        console.log('Vender: Cannot start session, not ready or session already active.');
+        console.log('vender.js: Cannot start session, not ready or session already active.');
     };
 }
 
 function sendBeginSession(){
-    console.log('session starting...');
+    console.log('vender.js: session starting...');
+    console.log('sendBeginSession machineReady',machineReady);
     if (machineReady) {
         vendSerialPort.write([0x03, 0x00, 0x28], function(err, results){
             //START SESSION WITH $2 (0x28 -> 0x14 for $1)
-            console.log('VENDER: session started!');
+            console.log('PC2MDB: sent begin session.');
             sessionStarted = true;
             vendFailed = false;
         });
     } else {
-        console.log('Vender: Machine is not ready. Aborting');
+        console.log('vender.js: Machine is not ready. Aborting');
     }
 }
 
 function sendVendApproved(){
-    console.log('VENDER: Trying to approve vend...');
-    vendSerialPort.write([0x05, 0x00, 0x07], function(err, results){
-        console.log('VENDER: sent vend approved...');
+    console.log('vender.js: Trying to approve vend...');
+    vendSerialPort.write([0x05, 0x00, 0x07], function(){
+        console.log('PC2MDB: sent vend approved...');
     });
 }
 
 function sendEndSession(callback){
-    console.log('VENDER: sending end session...');
-    vendSerialPort.write([0x07], function(err, results){
-        console.log('VENDER: session ended.');
+    console.log('vender.js: sending end session...');
+    vendSerialPort.write([0x07], function(){
+        console.log('PC2MDB: 07-Sent end session.');
         sessionStarted = false;
         if(callback){
         callback();}
@@ -211,25 +213,25 @@ function sendEndSession(callback){
 }
 
 function sendRequestEndSession(callback){
-    console.log('VENDER: Trying to cancel session...');
-    vendSerialPort.write([0x04], function(err, results){
-        console.log('VENDER: 06-Vend Session Cancel Request sent.');
+    console.log('vender.js: Trying to cancel session...');
+    vendSerialPort.write([0x04], function(){
+        console.log('PC2MDB: 06-Vend Session Cancel Request sent.');
         sessionStarted = false;
     });
 }
 
 function sendReset(){
-    console.log('VENDER: Trying to reset session...');
-    vendSerialPort.write([0x00], function(err, results){
-        console.log('VENDER: 00- Just Reset sent.');
+    console.log('vender.js: Trying to reset session...');
+    vendSerialPort.write([0x00], function(){
+        console.log('PC2MDB: 00-Just Reset sent.');
         sessionStarted = false;
     });
 }
 
 function sendVendDeny(){
-    console.log('VENDER: Trying to deny vend...');
-    vendSerialPort.write([0x06], function(err, results){
-        console.log('VENDER: 06-Vend Denied sent.');
+    console.log('vender.js: Trying to deny vend...');
+    vendSerialPort.write([0x06], function(){
+        console.log('PC2MDB: 06-Vend Denied sent.');
     });
 }
 

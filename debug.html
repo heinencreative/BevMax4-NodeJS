@@ -47,7 +47,7 @@
                     type: 'GET'
                 }).done(function(data) {
                     sessionStarted = true;
-                    $('#sessionStatus').addClass('active').text('Session Active');
+                    // $('#sessionStatus').addClass('active').text('Active');
                     console.log("debug.html: started session", data);
                 });
             });
@@ -59,7 +59,7 @@
                     type: 'GET'
                 }).done(function(data) {
                     sessionStarted = false;
-                    $('#sessionStatus').removeClass('active').text('Session Inactive');
+                    // $('#sessionStatus').removeClass('active').text('Inactive');
                     console.log("debug.html: ended session", data);
                 });
             });
@@ -94,6 +94,8 @@
     <body>
         <h1>Debug Terminal</h1>
         <p>Send Hex Codes to PC2MDB cashless device. First turn on a session using the button below</p>
+<!--         <h2>Session</h2>
+        <p><strong>The session is currently: </strong><span id="sessionStatus">Inactive</span></p> -->
         <p><button id="startSession">Start Session</button></p>
         <p><button id="endSession">End Session</button></p>
         <form id="debugForm">
