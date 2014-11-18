@@ -18,6 +18,10 @@ body {
   text-align: center;
 }
 
+* {
+  cursor: none; /* Touch screen should have no cursor */
+}
+
 h1 {
   font-size: 70px;
   margin: 0;
@@ -38,6 +42,9 @@ button {
 }
 .danger {
   background: -webkit-linear-gradient(top,#EC3216, #AB2511);
+}
+.disable {
+  opacity: .3;
 }
 .intro {
   font-size: 40px;
@@ -64,7 +71,7 @@ button {
 }
 
 .cancelContent {
-  /*display: none;*/
+  display: none;
   margin-top: 75px;
 }
 
@@ -104,7 +111,7 @@ footer {
   font-weight: bold;
 }
 .counter {
-  /*display: none;*/
+  display: none;
   position: absolute;
   top: 25px;
   right: 30px;

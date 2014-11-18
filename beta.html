@@ -15,6 +15,7 @@
 
     var alreadyConnected = false,
         sessionStarted = false,
+        timer,
         seconds = 15; // Countdown
 
         $(function(){
@@ -26,13 +27,12 @@
                     cache: false,
                     type: 'GET'
                 }).done(function(data) {
-                    alreadyConnected=true;
                     console.log("connected to machine", data);
                 });
 
             };
 
-            $('#startSession').click(startSession);
+            $('#startSession').not('.disable').click(startSession);
 
             $('#endSession').click(endSession);
 
@@ -45,28 +45,38 @@
               console.log('seconds',seconds);
               $('.counter--number').html(seconds);
               seconds --;
-              timeOut = setTimeout(countdown, 1000);
+              timer = setTimeout(countdown, 1000);
             }
 
             // Start session
-            $.ajax({
-                url: "/startsession",
-                cache: false,
-                type: 'GET'
-            }).done(function(data) {
-                sessionStarted = true;
-                console.log("debug.html: started session", data);
-            });
+            function startSession(){
+              $.ajax({
+                  url: "/startsession",
+                  cache: false,
+                  type: 'GET'
+              }).done(function(data) {
+                  sessionStarted = true;
+                  $('#startSession').addClass('disable');
+                  $('.cancelContent, .counter').fadeIn('slow');
+                  // Reset time and start
+                  seconds = 15;
+                  countdown();
+                  console.log("beta.html: started session", data);
+              });
+            }
 
             // End session
-            function endSesion(){
+            function endSession(){
               $.ajax({
                   url: "/endsession",
                   cache: false,
                   type: 'GET'
               }).done(function(data) {
                   sessionStarted = false;
-                  console.log("debug.html: ended session", data);
+                  $('#startSession').removeClass('disable');
+                  $('.cancelContent, counter').fadeOut('slow');
+                  clearTimeout(timer);
+                  console.log("beta.html: ended session", data);
               });
             }
 
