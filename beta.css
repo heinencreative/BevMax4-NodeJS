@@ -1,0 +1,122 @@
+/* ==========================================================================
+   Arnie Beta - Arnold Worldwide
+   Author - Chris Heinen
+   11/18/14
+   ========================================================================== */
+
+/* ================================================
+   Base Styles
+   ================================================ */
+
+html {
+  height: 100%;
+}
+
+body {
+  background: url(img/noisy-texture.png), radial-gradient(#DC210F,#6D0E08);
+  font-family: Georgia;
+  text-align: center;
+}
+
+h1 {
+  font-size: 70px;
+  margin: 0;
+}
+
+button {
+  font-family: Georgia;
+  border-radius: 10px;
+  padding: 20px 40px;
+  font-size: 30px;
+  color: #FFF;
+  border:none;
+  outline: none;
+  box-shadow:1px 1px 2px #6D0E08;
+}
+.primary {
+  background: -webkit-linear-gradient(top,#5E1309,#370A04);
+}
+.danger {
+  background: -webkit-linear-gradient(top,#EC3216, #AB2511);
+}
+.intro {
+  font-size: 40px;
+  color: #FF9383;
+  text-shadow:-1px -1px #961F17;
+  margin-top: .5em;
+  margin-bottom: 1.5em;
+}
+
+/* ================================================
+   Layout
+   ================================================ */
+
+.wrapper {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.primaryContent {
+  color:#FFF;
+  margin: 300px 0 0 0;
+  text-shadow: 1px 1px #AB2511, -1px -1px #6D0E08;
+}
+
+.cancelContent {
+  display: none;
+  margin-top: 75px;
+}
+
+.cancelContent--title {
+  font-size: 1.2em;
+  font-weight: normal;
+  margin-bottom: 1.1em;
+}
+
+footer {
+  position: absolute;
+  bottom: 20px;
+  color: #370A04;
+  text-shadow: 1px 1px #AB2511;
+}
+
+/* ================================================
+   Page Specific
+   ================================================ */
+
+.ribbon {
+  position: absolute;
+  top: 24px;
+  left: -51px;
+}
+.ribbon--inner {
+  transform: rotate(-45deg);
+  color: #6D0E08;
+  -webkit-font-smoothing: antialiased;
+  display: block;
+  float: right;
+  position: relative;
+  background: #FFF;
+  padding: 10px 70px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  font-size: 30px;
+  font-weight: bold;
+}
+.counter {
+  display: none;
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  color: #370A04;
+  text-shadow: 1px 1px #AB2511;
+}
+
+.counter--title {
+  margin: 0;
+}
+
+.counter--number {
+  font-size: 90px;
+  line-height: 80px;
+}
