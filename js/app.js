@@ -28,7 +28,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
 
   // End vending session
   $scope.endSession = function(){
-    $http.get('/endsession').success(function(data){
+    $http.get('/requestendsession').success(function(data){
       $scope.sessionStarted = false;
       clearTimeout(timer);
       console.log("ended session", data);
@@ -38,7 +38,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
   // Count down from X to
   function countdown(){
     if (seconds === 0) {
-      endSession();
+      $scope.endSession();
       return;
     }
     $scope.time = seconds;

@@ -216,7 +216,7 @@ function sendEndSession(callback){
 function sendRequestEndSession(callback){
     console.log('vender.js: Trying to cancel session...');
     vendSerialPort.write([0x04], function(){
-        console.log('PC2MDB: 06-Vend Session Cancel Request sent.');
+        console.log('PC2MDB: 04-Vend Session Cancel Request sent.');
         sessionStarted = false;
     });
 }
