@@ -207,15 +207,18 @@ function sendVendApproved(){
     });
 }
 
-function sendEndSession(callback){
+exports.sendEndSession = function(req,res){
     console.log('vender.js: sending end session...');
     vendSerialPort.write([0x07], function(){
         console.log('PC2MDB: 07-Sent end session.');
         sessionStarted = false;
-        if(callback){
-        callback();}
+        res.json({
+            machineReady: machineReady,
+            sessionStarted: sessionStarted,
+            vendFailed: vendFailed
+        });
     });
-}
+};
 
 exports.sendRequestEndSession = function(req,res){
     console.log('vender.js: Trying to cancel session...');
@@ -244,29 +247,3 @@ function sendVendDeny(){
         console.log('PC2MDB: 06-Vend Denied sent.');
     });
 }
-
-// sendRequest() is used to send debug requests, not used in production app
-function sendRequest(req, res){
-    var hex = [];
-    hex.push(req.query.hex);
-    console.log('hex',hex);
-    var data = new Buffer(hex);
-    console.log('sendRequest data',data);
-    if (hex.length > 0) {
-        vendSerialPort.write(data, function(err, results){
-            if (err) {
-                console.log('sendRequest err',err);
-                res.send(err);
-            } else {
-                console.log('sendRequest results',results);
-                res.send(results);
-            }
-        });
-    } else {
-        res.send('No hex code provided.');
-    }
-}
-
-
-module.exports.endSession = sendEndSession;
-module.exports.sendRequest = sendRequest;
