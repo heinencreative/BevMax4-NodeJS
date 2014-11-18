@@ -13,8 +13,9 @@
     <script>
 
 
-    var alreadyConnected=false;
-    var sessionStarted = false;
+    var alreadyConnected = false,
+        sessionStarted = false,
+        seconds = 15; // Countdown
 
         $(function(){
 
@@ -31,51 +32,43 @@
 
             };
 
-            $('#startSession').click(function(){
-                $.ajax({
-                    url: "/startsession",
-                    cache: false,
-                    type: 'GET'
-                }).done(function(data) {
-                    sessionStarted = true;
-                    // $('#sessionStatus').addClass('active').text('Active');
-                    console.log("debug.html: started session", data);
-                });
+            $('#startSession').click(startSession);
+
+            $('#endSession').click(endSession);
+
+            // Count down from X to
+            function countdown(){
+              if (seconds == 0) {
+                endSession();
+                return;
+              };
+              console.log('seconds',seconds);
+              $('.counter--number').html(seconds);
+              seconds --;
+              timeOut = setTimeout(countdown, 1000);
+            }
+
+            // Start session
+            $.ajax({
+                url: "/startsession",
+                cache: false,
+                type: 'GET'
+            }).done(function(data) {
+                sessionStarted = true;
+                console.log("debug.html: started session", data);
             });
 
-            $('#endSession').click(function(){
-                $.ajax({
-                    url: "/endsession",
-                    cache: false,
-                    type: 'GET'
-                }).done(function(data) {
-                    sessionStarted = false;
-                    // $('#sessionStatus').removeClass('active').text('Inactive');
-                    console.log("debug.html: ended session", data);
-                });
-            });
-
-            // Submit the debug form
-            $('#debugForm').submit(function(event){
-                var hex = $(this).find(':input').val();
-                $('#request').text("You entered: "+hex);
-
-                $.ajax({
-                    url: "sendRequest",
-                    data: {"hex":hex}
-                }).done(function(data, textStatus, jqXHR){
-                    $('#response').text(data);
-                    console.log('success data',data);
-                    console.log('success textStatus',textStatus);
-                    console.log('success jqXHR',jqXHR);
-                }).fail(function(jqXHR, textStatus, errorThrown){
-                    console.log('fail jqXHR',jqXHR);
-                    console.log('fail textStatus',textStatus);
-                    console.log('fail errorThrown',errorThrown);
-                    $('#response').text(jqXHR.responseText);
-                })
-                event.preventDefault();
-            });
+            // End session
+            function endSesion(){
+              $.ajax({
+                  url: "/endsession",
+                  cache: false,
+                  type: 'GET'
+              }).done(function(data) {
+                  sessionStarted = false;
+                  console.log("debug.html: ended session", data);
+              });
+            }
 
         });
 

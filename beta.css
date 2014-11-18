@@ -64,7 +64,7 @@ button {
 }
 
 .cancelContent {
-  display: none;
+  /*display: none;*/
   margin-top: 75px;
 }
 
@@ -104,7 +104,7 @@ footer {
   font-weight: bold;
 }
 .counter {
-  display: none;
+  /*display: none;*/
   position: absolute;
   top: 25px;
   right: 30px;
