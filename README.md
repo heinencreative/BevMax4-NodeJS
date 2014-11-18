@@ -41,3 +41,7 @@ To get Chrome to start up in full screen mode, run "ChromeKiosk". ChromeKiosk ha
 1. Open the terminal running node
 2. Enter *ctrl-c* to stop the node server
 3. Type `node server` and hit enter.
+
+## Notes
+* The most common issue that prevents a vending session from happening is that the reader becomes `READER DISABLED`. As of now, the only fix is to restart the node server, hard restart the vending machine and then refresh the page to setup/reset.
+* The vending machine keeps track of stock only after a user selects an empty slot and the VMC returns `13 03`. Future sessions will remember the empty slot and silently prevent it from being selected again. 
