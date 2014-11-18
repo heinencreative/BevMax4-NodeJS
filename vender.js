@@ -20,8 +20,8 @@ exports.setup = function(req,res){
         if (error) {
             console.log('vender.js: Failed to open serial port: '+error);
             return res.json(500, {
-            	error: 'Cannot open serial port'
-            	});
+                error: 'Cannot open serial port'
+                });
         } else{
             console.log('vender.js: serial open');
             vendSerialPort.on('data', function(data) {
@@ -33,11 +33,15 @@ exports.setup = function(req,res){
         }
     });
 
-}
+};
 
-function checkSession(){
-	return sessionStarted;
-}
+exports.checkSession = function(req,res){
+    res.json({
+        machineReady: machineReady,
+        sessionStarted: sessionStarted,
+        vendFailed: vendFailed
+    });
+};
 
 
 function processMessage(data){
@@ -171,33 +175,30 @@ function decodeChoice(choice) {
     }
 }
 
-function startSession(callback){
+exports.startSession = function(req,res){
     console.log('startSession machineReady: ', machineReady);
     console.log('startSession sessionStarted: ', sessionStarted);
     // Begin session only if machine is ready an no session has already been started
     if (machineReady && !sessionStarted) {
-        sendBeginSession();
-        if(callback){
-        callback();}
-    } else {
-        console.log('vender.js: Cannot start session, not ready or session already active.');
-    };
-}
-
-function sendBeginSession(){
-    console.log('vender.js: session starting...');
-    console.log('sendBeginSession machineReady',machineReady);
-    if (machineReady) {
         vendSerialPort.write([0x03, 0x00, 0x28], function(err, results){
             //START SESSION WITH $2 (0x28 -> 0x14 for $1)
             console.log('PC2MDB: sent begin session.');
             sessionStarted = true;
             vendFailed = false;
+
+            res.json({
+                machineReady: machineReady,
+                sessionStarted: sessionStarted,
+                vendFailed: vendFailed
+            });
         });
     } else {
-        console.log('vender.js: Machine is not ready. Aborting');
+        console.log('vender.js: Cannot start session, not ready or session already active.');
+        return res.json(500, {
+            error: 'Cannot start session'
+            });
     }
-}
+};
 
 function sendVendApproved(){
     console.log('vender.js: Trying to approve vend...');
@@ -216,13 +217,18 @@ function sendEndSession(callback){
     });
 }
 
-function sendRequestEndSession(callback){
+exports.sendRequestEndSession = function(req,res){
     console.log('vender.js: Trying to cancel session...');
     vendSerialPort.write([0x04], function(){
         console.log('PC2MDB: 04-Vend Session Cancel Request sent.');
         sessionStarted = false;
+        res.json({
+            machineReady: machineReady,
+            sessionStarted: sessionStarted,
+            vendFailed: vendFailed
+        });
     });
-}
+};
 
 function sendReset(){
     console.log('vender.js: Trying to reset session...');
@@ -261,8 +267,6 @@ function sendRequest(req, res){
     }
 }
 
-module.exports.sendRequestEndSession = sendRequestEndSession;
-module.exports.checkSession = checkSession;
-module.exports.startSession = startSession;
+
 module.exports.endSession = sendEndSession;
 module.exports.sendRequest = sendRequest;
