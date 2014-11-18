@@ -16,7 +16,7 @@
     var alreadyConnected = false,
         sessionStarted = false,
         timer,
-        seconds = 15; // Countdown
+        seconds = 30; // Countdown
 
         $(function(){
 
@@ -32,7 +32,7 @@
 
             };
 
-            $('#startSession').not('.disable').click(startSession);
+            $('#startSession').click(startSession);
 
             $('#endSession').click(endSession);
 
@@ -56,11 +56,11 @@
                   type: 'GET'
               }).done(function(data) {
                   sessionStarted = true;
-                  $('#startSession').addClass('disable');
-                  $('.cancelContent, .counter').fadeIn('slow');
+                  $('#startSession').addClass('disable').prop("disabled",true);
+                  $('.cancelContent').fadeIn('slow');
                   // Reset time and start
-                  seconds = 15;
-                  countdown();
+                  seconds = 30;
+                  //countdown();
                   console.log("beta.html: started session", data);
               });
             }
@@ -73,8 +73,8 @@
                   type: 'GET'
               }).done(function(data) {
                   sessionStarted = false;
-                  $('#startSession').removeClass('disable');
-                  $('.cancelContent, .counter').fadeOut('slow');
+                  $('#startSession').removeClass('disable').prop("disabled",false);
+                  $('.cancelContent').fadeOut('slow');
                   clearTimeout(timer);
                   console.log("beta.html: ended session", data);
               });
@@ -89,7 +89,7 @@
         <div class="ribbon"><div class="ribbon--inner">Beta</div></div>
         <div class="counter">
           <h3 class="counter--title">Timing Out</h3>
-          <span class="counter--number">15</span>
+          <span class="counter--number">30</span>
         </div>
         <div class="primaryContent wrapper">
           <h1>Hi, I am Arnie!</h1>

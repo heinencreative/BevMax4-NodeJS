@@ -43,9 +43,6 @@ button {
 .danger {
   background: -webkit-linear-gradient(top,#EC3216, #AB2511);
 }
-.disable {
-  opacity: .3;
-}
 .intro {
   font-size: 40px;
   color: #FF9383;
