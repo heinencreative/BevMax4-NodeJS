@@ -168,12 +168,14 @@ function decodeChoice(choice) {
     }
 }
 
-function startSession(){
+function startSession(callback){
     console.log('startSession machineReady: ', machineReady);
     console.log('startSession sessionStarted: ', sessionStarted);
     // Begin session only if machine is ready an no session has already been started
     if (machineReady && !sessionStarted) {
         sendBeginSession();
+        if(callback){
+        callback();}
     } else {
         console.log('vender.js: Cannot start session, not ready or session already active.');
     };
