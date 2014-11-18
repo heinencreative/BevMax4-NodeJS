@@ -5,7 +5,7 @@ var vendSerialPort,
     sessionStarted = false,
     machineReady = false;
 
-function setup(onConnected){
+exports.setup = function(req,res){
     console.log('vender.js: Setting Up Serial Options');
 
     vendSerialPort = new SerialPort("/dev/tty.usbserial-FTCAK7FB", {
@@ -19,14 +19,17 @@ function setup(onConnected){
     vendSerialPort.open( function (error) {
         if (error) {
             console.log('vender.js: Failed to open serial port: '+error);
+            return res.json(500, {
+            	error: 'Cannot open serial port'
+            	});
         } else{
             console.log('vender.js: serial open');
             vendSerialPort.on('data', function(data) {
                 processMessage(data);
             });
-            onConnected();
             // Send reset after making connection.
             sendReset();
+            res.send('Serial open');
         }
     });
 
@@ -260,7 +263,6 @@ function sendRequest(req, res){
 
 module.exports.sendRequestEndSession = sendRequestEndSession;
 module.exports.checkSession = checkSession;
-module.exports.setup = setup;
 module.exports.startSession = startSession;
 module.exports.endSession = sendEndSession;
 module.exports.sendRequest = sendRequest;

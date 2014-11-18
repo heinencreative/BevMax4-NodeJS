@@ -2,10 +2,7 @@ var express = require('express');
 var app = express();
 var vender = require('./vender.js');
 
-app.get('/connect', function(req, res){
-	res.send('connection happens when session starts...');
-  vender.setup(function(){console.log("connected to vending machine!");});
-});
+app.get('/connect', vender.setup);
 
 app.get('/startsession', function(req, res){
 	// vender.setup(function(){console.log("connected to vending machine!");
