@@ -11,7 +11,7 @@
     </head>
     <body data-ng-controller="ArnieController">
         <div class="ribbon"><div class="ribbon--inner">Beta</div></div>
-        <div class="counter">
+        <div class="counter" data-ng-show="sessionStarted">
           <h3 class="counter--title">Timing Out</h3>
           <span class="counter--number">{{time}}</span>
         </div>
@@ -21,7 +21,7 @@
           <p><button id="startSession" class="primary" data-ng-click="startSession">Beer Me!</button></p>
           <p><strong>Connected to PC2MDB: </strong>{{alreadyConnected}}</p>
           <p><strong>Session Started: </strong>{{sessionStarted}}</p>
-          <div class="cancelContent">
+          <div class="cancelContent" data-ng-show="sessionStarted">
             <h2 class="cancelContent--title">Change your mind?</h2>
             <p><button id="endSession" class="danger" data-ng-click="endSession">Cancel</button></p>
           </div>

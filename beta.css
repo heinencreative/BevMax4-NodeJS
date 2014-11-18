@@ -68,7 +68,6 @@ button {
 }
 
 .cancelContent {
-  display: none;
   margin-top: 75px;
 }
 
@@ -111,7 +110,6 @@ footer{
   font-weight: bold;
 }
 .counter {
-  display: none;
   position: absolute;
   top: 25px;
   right: 30px;
