@@ -74,7 +74,7 @@
               }).done(function(data) {
                   sessionStarted = false;
                   $('#startSession').removeClass('disable');
-                  $('.cancelContent, counter').fadeOut('slow');
+                  $('.cancelContent, .counter').fadeOut('slow');
                   clearTimeout(timer);
                   console.log("beta.html: ended session", data);
               });
@@ -88,8 +88,8 @@
     <body>
         <div class="ribbon"><div class="ribbon--inner">Beta</div></div>
         <div class="counter">
-          <h3 class="counter--title">Game Over</h3>
-          <span class="counter--number">10</span>
+          <h3 class="counter--title">Timing Out</h3>
+          <span class="counter--number">15</span>
         </div>
         <div class="primaryContent wrapper">
           <h1>Hi, I am Arnie!</h1>
