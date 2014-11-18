@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-ng-app="arnieApp">
 
     <head>
         <meta charset="utf-8">
@@ -8,101 +8,29 @@
         <meta name="description" content="Beer Vending Machine">
 
         <link rel="stylesheet" href="beta.css">
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-
-    <script>
-
-
-    var alreadyConnected = false,
-        sessionStarted = false,
-        timer,
-        seconds = 30; // Countdown
-
-        $(function(){
-
-            if(!alreadyConnected){
-
-                $.ajax({
-                    url: "/connect",
-                    cache: false,
-                    type: 'GET'
-                }).done(function(data) {
-                    console.log("connected to machine", data);
-                });
-
-            };
-
-            $('#startSession').click(startSession);
-
-            $('#endSession').click(endSession);
-
-            // Count down from X to
-            function countdown(){
-              if (seconds == 0) {
-                endSession();
-                return;
-              };
-              console.log('seconds',seconds);
-              $('.counter--number').html(seconds);
-              seconds --;
-              timer = setTimeout(countdown, 1000);
-            }
-
-            // Start session
-            function startSession(){
-              $.ajax({
-                  url: "/startsession",
-                  cache: false,
-                  type: 'GET'
-              }).done(function(data) {
-                  sessionStarted = true;
-                  $('#startSession').addClass('disable').prop("disabled",true);
-                  $('.cancelContent').fadeIn('slow');
-                  // Reset time and start
-                  seconds = 30;
-                  //countdown();
-                  console.log("beta.html: started session", data);
-              });
-            }
-
-            // End session
-            function endSession(){
-              $.ajax({
-                  url: "/endsession",
-                  cache: false,
-                  type: 'GET'
-              }).done(function(data) {
-                  sessionStarted = false;
-                  $('#startSession').removeClass('disable').prop("disabled",false);
-                  $('.cancelContent').fadeOut('slow');
-                  clearTimeout(timer);
-                  console.log("beta.html: ended session", data);
-              });
-            }
-
-        });
-
-
-       </script>
     </head>
-    <body>
+    <body data-ng-controller="ArnieController">
         <div class="ribbon"><div class="ribbon--inner">Beta</div></div>
         <div class="counter">
           <h3 class="counter--title">Timing Out</h3>
-          <span class="counter--number">30</span>
+          <span class="counter--number">{{time}}</span>
         </div>
         <div class="primaryContent wrapper">
           <h1>Hi, I am Arnie!</h1>
           <p class="intro">Can I get you a beer?</p>
-          <p><button id="startSession" class="primary">Beer Me!</button></p>
+          <p><button id="startSession" class="primary" data-ng-click="startSession">Beer Me!</button></p>
+          <p><strong>Connected to PC2MDB: </strong>{{alreadyConnected}}</p>
+          <p><strong>Session Started: </strong>{{sessionStarted}}</p>
           <div class="cancelContent">
             <h2 class="cancelContent--title">Change your mind?</h2>
-            <p><button id="endSession" class="danger">Cancel</button></p>
+            <p><button id="endSession" class="danger" data-ng-click="endSession">Cancel</button></p>
           </div>
         </div>
-        <footer class="wrapper">
+        <footer>
           <h3>What's this <em>beta</em> business?</h3>
           <p>We are working hard to upgrade Arnie with some cool new features. In the mean time, please be patient and let us know if you expreience any issues. Email Chris Heinen (cheinen@arn.com) if Arnie misbehaves.</p>
         </footer>
+        <script src="js/angular.min.js"></script>
+        <script src="js/app.js"></script>
     </body>
 </html>

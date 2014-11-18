@@ -18,9 +18,9 @@ body {
   text-align: center;
 }
 
-* {
-  cursor: none; /* Touch screen should have no cursor */
-}
+/** {
+  cursor: none;  Touch screen should have no cursor
+}*/
 
 h1 {
   font-size: 70px;
@@ -56,14 +56,14 @@ button {
    ================================================ */
 
 .wrapper {
-  max-width: 700px;
+  width: 700px;
   margin: 0 auto;
   padding: 0 40px;
 }
 
 .primaryContent {
   color:#FFF;
-  margin: 300px 0 0 0;
+  margin-top: 300px;
   text-shadow: 1px 1px #AB2511, -1px -1px #6D0E08;
 }
 
@@ -78,9 +78,12 @@ button {
   margin-bottom: 1.1em;
 }
 
-footer {
+footer{
   position: absolute;
   bottom: 20px;
+  left:50%;
+  width:600px;
+  margin-left: -300px;
   color: #370A04;
   text-shadow: 1px 1px #AB2511;
 }
