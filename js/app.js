@@ -1,10 +1,11 @@
 var arnieApp = angular.module('arnieApp',[]);
 
 arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $http) {
-
+	// TODO: should these be individual or just tied to the status obj?
   $scope.alreadyConnected = false;
   $scope.sessionStarted = false;
   $scope.vendInProgress = false;
+  $scope.vendSuccess = false;
   $scope.time = '';
 
   var timer,
@@ -20,6 +21,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
 
   // Start vending session
   $scope.startSession = function(){
+  	// TODO: page should be disabled untile machineReady is true
     $http.get('/status').success(function(data){
       console.log('startsession status',data);
     });
@@ -63,22 +65,24 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
   		// Continuously set vars until session is ended
   		$scope.sessionStarted = data.sessionStarted;
   		$scope.vendInProgress = data.vendInProgress;
+      $scope.vendSuccess = data.vendSuccess;
   		console.log('!$scope.sessionStarted',!$scope.sessionStarted);
   		// As long as no vend is in progress, keep counting down
-  		if (!$scope.vendInProgress) {
+  		if (!$scope.vendInProgress && !$scope.vendSuccess) {
     		if (seconds === 0) {
       			$scope.endSession();
      	 		return;
     		}
     		$scope.time = seconds;
     		seconds --;
-  		} else if (!$scope.sessionStarted) {
+  		} else if ($scope.vendSuccess) {
   			// TODO change conditional so that if a vend has been successful clearTimout, right now it starts counting down again and does a second end session.
   			// If the status ping returns that the session has ended, clearTimeout
   			console.log('clearTimeout');
   			clearTimeout(timer);
   		}
-  		timer = setTimeout(countdown, 1000); 
+  		// TODO: add case for when user is stupid and selects an empty row, then chastise them.
+  		timer = setTimeout(countdown, 1000);
   	});
   }
 

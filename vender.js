@@ -230,7 +230,6 @@ exports.sendEndSession = function(req,res){
     vendSerialPort.write([0x07], function(){
         console.log('PC2MDB: 07-Sent end session.');
         sessionStarted = false;
-        vendSuccess = false;
         // TODO: not sure how I feel about the DRY approach
         if (res) {
             res.json({
@@ -249,7 +248,6 @@ exports.sendRequestEndSession = function(req,res){
     vendSerialPort.write([0x04], function(){
         console.log('PC2MDB: 04-Vend Session Cancel Request sent.');
         sessionStarted = false;
-        vendSuccess = false;
         res.json({
             machineReady: machineReady,
             sessionStarted: sessionStarted,

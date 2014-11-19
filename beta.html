@@ -22,6 +22,7 @@
           <p><strong>Connected to PC2MDB: </strong>{{alreadyConnected}}</p>
           <p><strong>Session Started: </strong>{{sessionStarted}}</p>
           <p><strong>Vend In Progress: </strong>{{vendInProgress}}</p>
+          <p><strong>Vend Success: </strong>{{vendSuccess}}</p>
           <div class="cancelContent" data-ng-hide="!sessionStarted || vendInProgress">
             <h2 class="cancelContent--title">Change your mind?</h2>
             <p><button id="endSession" class="danger" data-ng-click="endSession()" data-ng-disable="!vendInProgress">Cancel</button></p>
