@@ -4,40 +4,14 @@ var vender = require('./vender.js');
 
 app.get('/connect', vender.setup);
 
-app.get('/startsession', function(req, res){
-	// vender.setup(function(){console.log("connected to vending machine!");
-		vender.startSession(function(){
-      console.log("session started! ready for selection...");
-			res.send('done');
-		});
-	// });
-});
+app.get('/startsession', vender.startSession);
 
-app.get('/checksession', function(req, res){
-    res.send(vender.checkSession());
-});
+app.get('/status', vender.status);
 
-app.get('/endsession', function(req, res){
-    vender.endSession(function(){
-      console.log("session ended, connection closed");
-      res.send('done');
-	});
-});
+app.get('/endsession', vender.sendEndSession);
 
-app.get('/requestendsession', function(req, res){
-	/*vender.setup(function(){console.log("connected to vending machine!");*/
-		vender.sendRequestEndSession(function(){
-		  res.send('done');
-		});
-	/*});*/
-});
+app.get('/requestendsession', vender.sendRequestEndSession);
 
-// Used for debugging cashless device
-app.route('/sendRequest')
-  .get(vender.sendRequest);
-
-app.get(/^(.+)$/, function(req, res) { res.sendfile('./' + req.params[0]); });
+app.get(/^(.+)$/, function(req, res) { res.sendfile('./' + req.params[0]); }); // TODO: is this necessary?
 
 app.listen(3000);
-
-

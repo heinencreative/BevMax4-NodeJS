@@ -4,6 +4,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
 
   $scope.alreadyConnected = false;
   $scope.sessionStarted = false;
+  $scope.vendInProgress = false;
   $scope.time = '';
 
   var timer,
@@ -18,6 +19,10 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
 
   // Start vending session
   $scope.startSession = function(){
+    $http.get('/status').success(function(data){
+      console.log('startsession status',data);
+    });
+
     $http.get('/startsession').success(function(data){
       $scope.sessionStarted = true;
       seconds = 30; // 30 second count down
@@ -28,10 +33,14 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
 
   // End vending session
   $scope.endSession = function(){
-    $http.get('/requestendsession').success(function(data){
-      $scope.sessionStarted = false;
-      clearTimeout(timer);
-      console.log("ended session", data);
+    // First checkstatus to see if vend is taking place
+    $http.get('/status').success(function(data){
+      console.log('endsession status',data);
+      $http.get('/requestendsession').success(function(data){
+        $scope.sessionStarted = false;
+        clearTimeout(timer);
+        console.log("ended session", data);
+      });
     });
   };
 

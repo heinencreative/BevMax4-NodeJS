@@ -3,8 +3,10 @@ var SerialPort = require("serialport").SerialPort;
 var vendSerialPort,
     vendFailed = false,
     sessionStarted = false,
-    machineReady = false;
+    machineReady = false,
+    vendInProgress = false;
 
+// Connect to serial port and listen
 exports.setup = function(req,res){
     console.log('vender.js: Setting Up Serial Options');
 
@@ -29,21 +31,28 @@ exports.setup = function(req,res){
             });
             // Send reset after making connection.
             sendReset();
-            res.send('Serial open');
+            res.json({
+                machineReady: machineReady,
+                sessionStarted: sessionStarted,
+                vendFailed: vendFailed,
+                vendInProgress: vendInProgress
+            });
         }
     });
 
 };
 
-exports.checkSession = function(req,res){
+// Returns the current VMC and PC2MDB variables
+exports.status = function(req,res){
     res.json({
         machineReady: machineReady,
         sessionStarted: sessionStarted,
-        vendFailed: vendFailed
+        vendFailed: vendFailed,
+        vendInProgress: vendInProgress
     });
 };
 
-
+// Process the responses from PC2MDB
 function processMessage(data){
     var dataArray = data.trim().toString('utf8').split(" ");
 
@@ -75,8 +84,10 @@ function processMessage(data){
                 if(dataArray[1] == "03"){ //FAILED
                    console.log("VMC: Vend Failed (e.g. empty row selected).");
                    vendFailed = true;
+                   vendInProgress = false;
                 } else if(dataArray[1] == "04"){ //COMPLETE
                     console.log("VMC: Session Complete.");
+                    vendInProgress = false;
                     //debug(dataArray);
                     sendEndSession();
                 } else {
@@ -119,6 +130,7 @@ function processMessage(data){
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "00"){ //REQUEST
                     decodeChoice(dataArray[5]);
+                    vendInProgress = true;
                 } else {
                     console.log("VMC: Unknown message: " + data);
                 }
@@ -189,7 +201,8 @@ exports.startSession = function(req,res){
             res.json({
                 machineReady: machineReady,
                 sessionStarted: sessionStarted,
-                vendFailed: vendFailed
+                vendFailed: vendFailed,
+                vendInProgress: vendInProgress
             });
         });
     } else {
@@ -207,15 +220,19 @@ function sendVendApproved(){
     });
 }
 
-function sendEndSession(callback){
+exports.sendEndSession = function(req,res){
     console.log('vender.js: sending end session...');
     vendSerialPort.write([0x07], function(){
         console.log('PC2MDB: 07-Sent end session.');
         sessionStarted = false;
-        if(callback){
-        callback();}
+        res.json({
+            machineReady: machineReady,
+            sessionStarted: sessionStarted,
+            vendFailed: vendFailed,
+            vendInProgress: vendInProgress
+        });
     });
-}
+};
 
 exports.sendRequestEndSession = function(req,res){
     console.log('vender.js: Trying to cancel session...');
@@ -225,7 +242,8 @@ exports.sendRequestEndSession = function(req,res){
         res.json({
             machineReady: machineReady,
             sessionStarted: sessionStarted,
-            vendFailed: vendFailed
+            vendFailed: vendFailed,
+            vendInProgress: vendInProgress
         });
     });
 };
@@ -244,29 +262,3 @@ function sendVendDeny(){
         console.log('PC2MDB: 06-Vend Denied sent.');
     });
 }
-
-// sendRequest() is used to send debug requests, not used in production app
-function sendRequest(req, res){
-    var hex = [];
-    hex.push(req.query.hex);
-    console.log('hex',hex);
-    var data = new Buffer(hex);
-    console.log('sendRequest data',data);
-    if (hex.length > 0) {
-        vendSerialPort.write(data, function(err, results){
-            if (err) {
-                console.log('sendRequest err',err);
-                res.send(err);
-            } else {
-                console.log('sendRequest results',results);
-                res.send(results);
-            }
-        });
-    } else {
-        res.send('No hex code provided.');
-    }
-}
-
-
-module.exports.endSession = sendEndSession;
-module.exports.sendRequest = sendRequest;
