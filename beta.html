@@ -32,9 +32,11 @@
           <div class="overlay--content">
             <h2>Status</h2>
             <p><strong>Connected to PC2MDB: </strong><span class="status" data-ng-class="{'false':!alreadyConnected}">{{alreadyConnected}}</span></p>
+            <p><strong>Reader Enabled: </strong><span class="status" data-ng-class="{'false':!status.machineReady}">{{status.machineReady}}</span></p>
             <p><strong>Session Started: </strong><span class="status" data-ng-class="{'false':!sessionStarted}">{{sessionStarted}}</span></p>
             <p><strong>Vend In Progress: </strong><span class="status" data-ng-class="{'false':!vendInProgress}">{{vendInProgress}}</span></p>
             <p><strong>Vend Success: </strong><span class="status" data-ng-class="{'false':!vendSuccess}">{{vendSuccess}}</span></p>
+            <pre>{{status|json}}</pre>
             <button class="overlay--close" data-ng-click="overlay = false" data-ng-show="alreadyConnected">Close</button>
           </div>
         </div>

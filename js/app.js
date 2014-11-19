@@ -4,6 +4,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', function(
   // TODO: should these be individual or just tied to the status obj?
   $scope.status = {}; // TODO: use this instead of the below vars
   $scope.overlay = true; // Start with overlay
+  $scope.serialPortOpen = false;
   $scope.alreadyConnected = false;
   $scope.sessionStarted = false;
   $scope.vendInProgress = false;
@@ -63,6 +64,13 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', function(
           });
         }
     });
+  };
+  
+  // Check status
+  $scope.status = function(){
+  	$http.get('/status').success(function(data){
+  		$scope.status = data;
+  	});
   };
 
   // Count down from X to 0

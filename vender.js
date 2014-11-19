@@ -1,6 +1,7 @@
 var SerialPort = require("serialport").SerialPort;
 
 var vendSerialPort,
+	serialPortOpen = false,
     vendFailed = false,
     sessionStarted = false,
     machineReady = false,
@@ -27,12 +28,14 @@ exports.setup = function(req,res){
                 });
         } else{
             console.log('vender.js: serial open');
+            serialPortOpen = true;
             vendSerialPort.on('data', function(data) {
                 processMessage(data);
             });
             // Send reset after making connection.
             sendReset();
             res.json({
+            	serialPortOpen: serialPortOpen,
                 machineReady: machineReady,
                 sessionStarted: sessionStarted,
                 vendFailed: vendFailed,
@@ -47,6 +50,7 @@ exports.setup = function(req,res){
 // Returns the current VMC and PC2MDB variables
 exports.status = function(req,res){
     res.json({
+    	serialPortOpen: serialPortOpen,
         machineReady: machineReady,
         sessionStarted: sessionStarted,
         vendFailed: vendFailed,
@@ -203,6 +207,7 @@ exports.startSession = function(req,res){
             vendSuccess = false;
             // TODO: determine if all these json responses are necessary, or is status() is enough
             res.json({
+            	serialPortOpen: serialPortOpen,
                 machineReady: machineReady,
                 sessionStarted: sessionStarted,
                 vendFailed: vendFailed,
@@ -233,6 +238,7 @@ exports.sendEndSession = function(req,res){
         // TODO: not sure how I feel about the DRY approach
         if (res) {
             res.json({
+            	serialPortOpen: serialPortOpen,
                 machineReady: machineReady,
                 sessionStarted: sessionStarted,
                 vendFailed: vendFailed,
@@ -249,6 +255,7 @@ exports.sendRequestEndSession = function(req,res){
         console.log('PC2MDB: 04-Vend Session Cancel Request sent.');
         sessionStarted = false;
         res.json({
+        	serialPortOpen: serialPortOpen,
             machineReady: machineReady,
             sessionStarted: sessionStarted,
             vendFailed: vendFailed,
