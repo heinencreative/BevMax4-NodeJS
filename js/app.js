@@ -1,7 +1,7 @@
 var arnieApp = angular.module('arnieApp',[]);
 
 arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $http) {
-
+	// TODO: should these be individual or just tied to the status obj?
   $scope.alreadyConnected = false;
   $scope.sessionStarted = false;
   $scope.vendInProgress = false;
@@ -21,6 +21,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
 
   // Start vending session
   $scope.startSession = function(){
+  	// TODO: page should be disabled untile machineReady is true
     $http.get('/status').success(function(data){
       console.log('startsession status',data);
     });
@@ -80,6 +81,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
   			console.log('clearTimeout');
   			clearTimeout(timer);
   		}
+  		// TODO: add case for when user is stupid and selects an empty row, then chastise them.
   		timer = setTimeout(countdown, 1000);
   	});
   }
