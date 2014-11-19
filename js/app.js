@@ -5,6 +5,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
   $scope.alreadyConnected = false;
   $scope.sessionStarted = false;
   $scope.vendInProgress = false;
+  $scope.vendSuccess = false;
   $scope.time = '';
 
   var timer,
@@ -39,8 +40,8 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
     	console.log('endsession status',data);
 		$scope.vendInProgress = data.vendInProgress;
   		// If a vend is already in progress, prevent cancel
-  		if (!$scope.vendInProgress) {   
-  			// Request to end session   
+  		if (!$scope.vendInProgress) {
+  			// Request to end session
       		$http.get('/requestendsession').success(function(data){
         		clearTimeout(timer);
         		console.log("requested end session", data);
@@ -63,22 +64,23 @@ arnieApp.controller('ArnieController', ['$scope', '$http', function($scope, $htt
   		// Continuously set vars until session is ended
   		$scope.sessionStarted = data.sessionStarted;
   		$scope.vendInProgress = data.vendInProgress;
+      $scope.vendSuccess = data.vendSuccess;
   		console.log('!$scope.sessionStarted',!$scope.sessionStarted);
   		// As long as no vend is in progress, keep counting down
-  		if (!$scope.vendInProgress) {
+  		if (!$scope.vendInProgress && !$scope.vendSuccess) {
     		if (seconds === 0) {
       			$scope.endSession();
      	 		return;
     		}
     		$scope.time = seconds;
     		seconds --;
-  		} else if (!$scope.sessionStarted) {
+  		} else if ($scope.vendSuccess) {
   			// TODO change conditional so that if a vend has been successful clearTimout, right now it starts counting down again and does a second end session.
   			// If the status ping returns that the session has ended, clearTimeout
   			console.log('clearTimeout');
   			clearTimeout(timer);
   		}
-  		timer = setTimeout(countdown, 1000); 
+  		timer = setTimeout(countdown, 1000);
   	});
   }
 
