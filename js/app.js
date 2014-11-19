@@ -14,17 +14,17 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', function(
       seconds;
 
   // When the app starts, connect to PC2MDB
-  // if(!$scope.alreadyConnected){
-  //   $http.get('/connect').success(function(data){
-  //     console.log("connected to machine", data);
-  //     $scope.status = data;
-  //     // TODO: replace alreadyConnect with machineReady?
-  //     $scope.alreadyConnected = true;
-  //     $timeout(function(){
-  //       $scope.overlay = false; // Hide startup overlay
-  //     },1500);
-  //   });
-  // }
+  if(!$scope.alreadyConnected){
+    $http.get('/connect').success(function(data){
+      console.log("connected to machine", data);
+      $scope.status = data;
+      // TODO: replace alreadyConnect with machineReady?
+      $scope.alreadyConnected = true;
+      $timeout(function(){
+        $scope.overlay = false; // Hide startup overlay
+      },1500);
+    });
+  }
 
   // Start vending session
   $scope.startSession = function(){
