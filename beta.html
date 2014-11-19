@@ -11,17 +11,17 @@
     </head>
     <body data-ng-controller="ArnieController">
         <div class="ribbon" data-ng-click="overlay = true"><div class="ribbon--inner">Beta</div></div>
-        <div class="counter" data-ng-hide="!sessionStarted || vendInProgress">
+        <div class="counter" data-ng-hide="!status.sessionStarted || status.vendInProgress">
           <h3 class="counter--title">Timing Out</h3>
           <span class="counter--number">{{time}}</span>
         </div>
         <div class="primaryContent wrapper">
           <h1>Hi, I am Arnie!</h1>
           <p class="intro">Can I get you a beer?</p>
-          <p><button id="startSession" class="primary" data-ng-click="startSession()" data-ng-disable="sessionStarted">Beer Me!</button></p>
-          <div class="cancelContent" data-ng-hide="!sessionStarted || vendInProgress">
+          <p><button id="startSession" class="primary" data-ng-click="startSession()" data-ng-disable="status.sessionStarted">Beer Me!</button></p>
+          <div class="cancelContent" data-ng-hide="!status.sessionStarted || status.vendInProgress">
             <h2 class="cancelContent--title">Change your mind?</h2>
-            <p><button id="endSession" class="danger" data-ng-click="endSession()" data-ng-disable="!vendInProgress">Cancel</button></p>
+            <p><button id="endSession" class="danger" data-ng-click="endSession()" data-ng-disable="!status.vendInProgress">Cancel</button></p>
           </div>
         </div>
         <footer>
@@ -31,13 +31,13 @@
         <div class="overlay" data-ng-show="overlay">
           <div class="overlay--content">
             <h2>Status</h2>
-            <p><strong>Connected to PC2MDB: </strong><span class="status" data-ng-class="{'false':!alreadyConnected}">{{alreadyConnected}}</span></p>
+            <p><strong>Connected to PC2MDB: </strong><span class="status" data-ng-class="{'false':!status.serialPortOpen}">{{status.serialPortOpen}}</span></p>
             <p><strong>Reader Enabled: </strong><span class="status" data-ng-class="{'false':!status.machineReady}">{{status.machineReady}}</span></p>
-            <p><strong>Session Started: </strong><span class="status" data-ng-class="{'false':!sessionStarted}">{{sessionStarted}}</span></p>
-            <p><strong>Vend In Progress: </strong><span class="status" data-ng-class="{'false':!vendInProgress}">{{vendInProgress}}</span></p>
-            <p><strong>Vend Success: </strong><span class="status" data-ng-class="{'false':!vendSuccess}">{{vendSuccess}}</span></p>
+            <p><strong>Session Started: </strong><span class="status" data-ng-class="{'false':!status.sessionStarted}">{{status.sessionStarted}}</span></p>
+            <p><strong>Vend In Progress: </strong><span class="status" data-ng-class="{'false':!status.vendInProgress}">{{status.vendInProgress}}</span></p>
+            <p><strong>Vend Success: </strong><span class="status" data-ng-class="{'false':!statusvendSuccess}">{{statusvendSuccess}}</span></p>
             <pre>{{status|json}}</pre>
-            <button class="overlay--close" data-ng-click="overlay = false" data-ng-show="alreadyConnected">Close</button>
+            <button class="overlay--close" data-ng-click="overlay = false" data-ng-show="status.machineReady">Close</button>
           </div>
         </div>
         <script src="js/angular.min.js"></script>
