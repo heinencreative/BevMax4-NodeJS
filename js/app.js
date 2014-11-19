@@ -1,6 +1,6 @@
 var arnieApp = angular.module('arnieApp',[]);
 
-arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interval', function($scope, $http, $timeout, $interval) {
 
   $scope.status = {};
   $scope.overlay = true; // Start with overlay
