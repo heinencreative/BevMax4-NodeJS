@@ -89,7 +89,7 @@ function processMessage(data){
                     console.log("VMC: Session Complete.");
                     vendInProgress = false;
                     //debug(dataArray);
-                    sendEndSession();
+                    // TODO End session after session complete
                 } else {
                    console.log("VMC: Unknown message: " + data);
                 }
