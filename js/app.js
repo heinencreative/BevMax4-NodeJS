@@ -6,7 +6,8 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', function(
   $scope.overlay = true; // Start with overlay
   $scope.time = '';
 
-  var timer,
+  var initStatusCheck,
+      timer,
       seconds;
 
   // Initialize the app
@@ -19,6 +20,18 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', function(
         $http.get('/connect').success(function(data){
           console.log("connected to machine", data);
           $scope.status = data;
+
+          // Keep pinging status until Reader Enable (a.k.a "its go time")
+          initStatusCheck = $interval(function(){
+            $http.get('/status').success(function(data){
+              $scope.status = data;
+              if ($scope.status.machineReady) {
+                $scope.overlay = false; // Hide startup overlay
+                $interval.cancel(initStatusCheck);
+              }
+            });
+          }, 1000);
+
         });
       }
     });

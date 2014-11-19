@@ -35,7 +35,7 @@
             <p><strong>Reader Enabled: </strong><span class="status" data-ng-class="{'false':!status.machineReady}">{{status.machineReady}}</span></p>
             <p><strong>Session Started: </strong><span class="status" data-ng-class="{'false':!status.sessionStarted}">{{status.sessionStarted}}</span></p>
             <p><strong>Vend In Progress: </strong><span class="status" data-ng-class="{'false':!status.vendInProgress}">{{status.vendInProgress}}</span></p>
-            <p><strong>Vend Success: </strong><span class="status" data-ng-class="{'false':!statusvendSuccess}">{{statusvendSuccess}}</span></p>
+            <p><strong>Vend Success: </strong><span class="status" data-ng-class="{'false':!status.vendSuccess}">{{status.vendSuccess}}</span></p>
             <pre>{{status|json}}</pre>
             <button class="overlay--close" data-ng-click="overlay = false" data-ng-show="status.machineReady">Close</button>
           </div>
