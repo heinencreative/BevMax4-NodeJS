@@ -89,7 +89,7 @@ function processMessage(data){
                     console.log("VMC: Session Complete.");
                     vendInProgress = false;
                     //debug(dataArray);
-                    sendEndSession();
+                    exports.sendEndSession();
                 } else {
                    console.log("VMC: Unknown message: " + data);
                 }
@@ -225,12 +225,14 @@ exports.sendEndSession = function(req,res){
     vendSerialPort.write([0x07], function(){
         console.log('PC2MDB: 07-Sent end session.');
         sessionStarted = false;
-        res.json({
-            machineReady: machineReady,
-            sessionStarted: sessionStarted,
-            vendFailed: vendFailed,
-            vendInProgress: vendInProgress
-        });
+        if (res) {
+        	res.json({
+            	machineReady: machineReady,
+            	sessionStarted: sessionStarted,
+            	vendFailed: vendFailed,
+            	vendInProgress: vendInProgress
+        	});
+        }
     });
 };
 
