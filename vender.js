@@ -4,7 +4,8 @@ var vendSerialPort,
     vendFailed = false,
     sessionStarted = false,
     machineReady = false,
-    vendInProgress = false;
+    vendInProgress = false,
+    vendSuccess = false;
 
 // Connect to serial port and listen
 exports.setup = function(req,res){
@@ -35,7 +36,8 @@ exports.setup = function(req,res){
                 machineReady: machineReady,
                 sessionStarted: sessionStarted,
                 vendFailed: vendFailed,
-                vendInProgress: vendInProgress
+                vendInProgress: vendInProgress,
+                vendSuccess: vendSuccess
             });
         }
     });
@@ -48,7 +50,8 @@ exports.status = function(req,res){
         machineReady: machineReady,
         sessionStarted: sessionStarted,
         vendFailed: vendFailed,
-        vendInProgress: vendInProgress
+        vendInProgress: vendInProgress,
+        vendSuccess: vendSuccess
     });
 };
 
@@ -88,8 +91,7 @@ function processMessage(data){
                 } else if(dataArray[1] == "04"){ //COMPLETE
                     console.log("VMC: Session Complete.");
                     vendInProgress = false;
-                    //debug(dataArray);
-                    // TODO End session after session complete
+                    exports.sendEndSession();
                 } else {
                    console.log("VMC: Unknown message: " + data);
                 }
@@ -116,6 +118,7 @@ function processMessage(data){
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "02"){ //SUCCESS
                     console.log("VMC: Vend Success.");
+                    vendSuccess = true;
                 } else {
                    console.log("VMC: Unknown message: " + data);
                 }
@@ -197,12 +200,14 @@ exports.startSession = function(req,res){
             console.log('PC2MDB: sent begin session.');
             sessionStarted = true;
             vendFailed = false;
-
+            vendSuccess = false;
+            // TODO: determine if all these json responses are necessary, or is status() is enough
             res.json({
                 machineReady: machineReady,
                 sessionStarted: sessionStarted,
                 vendFailed: vendFailed,
-                vendInProgress: vendInProgress
+                vendInProgress: vendInProgress,
+                vendSuccess: vendSuccess
             });
         });
     } else {
@@ -225,12 +230,17 @@ exports.sendEndSession = function(req,res){
     vendSerialPort.write([0x07], function(){
         console.log('PC2MDB: 07-Sent end session.');
         sessionStarted = false;
-        res.json({
-            machineReady: machineReady,
-            sessionStarted: sessionStarted,
-            vendFailed: vendFailed,
-            vendInProgress: vendInProgress
-        });
+        vendSuccess = false;
+        // TODO: not sure how I feel about the DRY approach
+        if (res) {
+            res.json({
+                machineReady: machineReady,
+                sessionStarted: sessionStarted,
+                vendFailed: vendFailed,
+                vendInProgress: vendInProgress,
+                vendSuccess: vendSuccess
+            });
+        }
     });
 };
 
@@ -239,11 +249,13 @@ exports.sendRequestEndSession = function(req,res){
     vendSerialPort.write([0x04], function(){
         console.log('PC2MDB: 04-Vend Session Cancel Request sent.');
         sessionStarted = false;
+        vendSuccess = false;
         res.json({
             machineReady: machineReady,
             sessionStarted: sessionStarted,
             vendFailed: vendFailed,
-            vendInProgress: vendInProgress
+            vendInProgress: vendInProgress,
+            vendSuccess: vendSuccess
         });
     });
 };

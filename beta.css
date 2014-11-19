@@ -37,6 +37,9 @@ button {
   outline: none;
   box-shadow:1px 1px 2px #6D0E08;
 }
+button:disabled {
+	opacity: .3;
+}
 .primary {
   background: -webkit-linear-gradient(top,#5E1309,#370A04);
 }
