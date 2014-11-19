@@ -6,7 +6,7 @@ app.get('/connect', vender.setup);
 
 app.get('/startsession', vender.startSession);
 
-app.get('/checksession', vender.checkSession);
+app.get('/status', vender.status);
 
 app.get('/endsession', vender.sendEndSession);
 

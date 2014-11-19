@@ -3,8 +3,10 @@ var SerialPort = require("serialport").SerialPort;
 var vendSerialPort,
     vendFailed = false,
     sessionStarted = false,
-    machineReady = false;
+    machineReady = false,
+    vendInProgress = false;
 
+// Connect to serial port and listen
 exports.setup = function(req,res){
     console.log('vender.js: Setting Up Serial Options');
 
@@ -29,21 +31,28 @@ exports.setup = function(req,res){
             });
             // Send reset after making connection.
             sendReset();
-            res.send('Serial open');
+            res.json({
+                machineReady: machineReady,
+                sessionStarted: sessionStarted,
+                vendFailed: vendFailed,
+                vendInProgress: vendInProgress
+            });
         }
     });
 
 };
 
-exports.checkSession = function(req,res){
+// Returns the current VMC and PC2MDB variables
+exports.status = function(req,res){
     res.json({
         machineReady: machineReady,
         sessionStarted: sessionStarted,
-        vendFailed: vendFailed
+        vendFailed: vendFailed,
+        vendInProgress: vendInProgress
     });
 };
 
-
+// Process the responses from PC2MDB
 function processMessage(data){
     var dataArray = data.trim().toString('utf8').split(" ");
 
@@ -75,8 +84,10 @@ function processMessage(data){
                 if(dataArray[1] == "03"){ //FAILED
                    console.log("VMC: Vend Failed (e.g. empty row selected).");
                    vendFailed = true;
+                   vendInProgress = false;
                 } else if(dataArray[1] == "04"){ //COMPLETE
                     console.log("VMC: Session Complete.");
+                    vendInProgress = false;
                     //debug(dataArray);
                     sendEndSession();
                 } else {
@@ -119,6 +130,7 @@ function processMessage(data){
             if(dataArray[0] == "13"){ //VEND
                 if(dataArray[1] == "00"){ //REQUEST
                     decodeChoice(dataArray[5]);
+                    vendInProgress = true;
                 } else {
                     console.log("VMC: Unknown message: " + data);
                 }
@@ -189,7 +201,8 @@ exports.startSession = function(req,res){
             res.json({
                 machineReady: machineReady,
                 sessionStarted: sessionStarted,
-                vendFailed: vendFailed
+                vendFailed: vendFailed,
+                vendInProgress: vendInProgress
             });
         });
     } else {
@@ -215,7 +228,8 @@ exports.sendEndSession = function(req,res){
         res.json({
             machineReady: machineReady,
             sessionStarted: sessionStarted,
-            vendFailed: vendFailed
+            vendFailed: vendFailed,
+            vendInProgress: vendInProgress
         });
     });
 };
@@ -228,7 +242,8 @@ exports.sendRequestEndSession = function(req,res){
         res.json({
             machineReady: machineReady,
             sessionStarted: sessionStarted,
-            vendFailed: vendFailed
+            vendFailed: vendFailed,
+            vendInProgress: vendInProgress
         });
     });
 };
