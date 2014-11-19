@@ -76,7 +76,6 @@ function processMessage(data){
 
                 if(vendFailed && !sessionStarted){
                     console.log("VMC: Vend Failed. Please attempt a new session.");
-                    vendFailed = false;
                 }
             } else {
                console.log("VMC: Unknown message: " + data);
