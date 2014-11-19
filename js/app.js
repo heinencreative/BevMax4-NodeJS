@@ -26,7 +26,6 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
             $http.get('/status').success(function(data){
               $scope.status = data;
               if ($scope.status.machineReady) {
-                $scope.overlay = false; // Hide startup overlay
                 $interval.cancel(initStatusCheck);
               }
             });
