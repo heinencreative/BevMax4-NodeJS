@@ -11,7 +11,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
       seconds;
 
   // Initialize the app
-  var init = function(){
+  $scope.init = function(){
     // Check inital status
     $http.get('/status').success(function(data){
       $scope.status = data;
@@ -35,7 +35,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
       }
     });
   };
-  init();
+  $scope.init();
 
   // Start vending session
   $scope.startSession = function(){
