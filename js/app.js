@@ -7,6 +7,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
   $scope.time = '';
 
   var initStatusCheck,
+      sessionStatusCheck,
       timer,
       seconds;
 
@@ -23,6 +24,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
 
           // Keep pinging status until Reader Enable (a.k.a "its go time")
           initStatusCheck = $interval(function(){
+            console.log('ping initStatusCheck');
             $http.get('/status').success(function(data){
               $scope.status = data;
               if ($scope.status.machineReady) {
@@ -39,9 +41,16 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
 
   // Start vending session
   $scope.startSession = function(){
-    $http.get('/status').success(function(data){
-      console.log('startsession status',data);
-    });
+    // Keep pinging status while session is active
+    sessionStatusCheck = $interval(function(){
+      console.log('ping sessionStatusCheck');
+      $http.get('/status').success(function(data){
+        $scope.status = data;
+        if (!$scope.status.sessionStarted) {
+          $interval.cancel(sessionStatusCheck);
+        }
+      });
+    }, 1000);
 
     $http.get('/startsession').success(function(data){
       seconds = 30; // 30 second count down
@@ -87,25 +96,17 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
   // Count down from X to 0
   function countdown(){
     $http.get('/status').success(function(data){
-      console.log('ping status',data);
-      // Continuously update status until session is ended
-      $scope.status = data;
-
       // As long as no vend is in progress, keep counting down
-      if (!$scope.status.vendInProgress && !$scope.status.vendSuccess) {
+      if (!$scope.status.vendInProgress) {
         if (seconds === 0) {
             $scope.endSession();
           return;
         }
         $scope.time = seconds;
         seconds --;
-      } else if ($scope.status.vendSuccess || $scope.status.vendFailed) {
-        // If the session was successful or failed, clearTimeout()
-        console.log('clearTimeout');
-        clearTimeout(timer);
+        timer = setTimeout(countdown, 1000);
       }
       // TODO: add case for when user is stupid and selects an empty row, then chastise them.
-      timer = setTimeout(countdown, 1000);
     });
   }
 
