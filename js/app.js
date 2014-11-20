@@ -99,8 +99,8 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
         }
         $scope.time = seconds;
         seconds --;
-      } else if ($scope.status.vendSuccess) {
-        // If the session was successful, clearTimeout()
+      } else if ($scope.status.vendSuccess || $scope.status.vendFailed) {
+        // If the session was successful or failed, clearTimeout()
         console.log('clearTimeout');
         clearTimeout(timer);
       }

@@ -11,17 +11,17 @@
 html {
   height: 100%;
 }
-
 body {
   background: url(../img/noisy-texture.png), radial-gradient(#DC210F,#6D0E08);
   font-family: Georgia;
   text-align: center;
 }
-
 * {
   cursor: none;  /* Touch screen should have no cursor */
 }
-
+::selection {
+  background: transparent;
+}
 h1 {
   font-size: 70px;
   margin: 0;

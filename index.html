@@ -19,10 +19,10 @@
           <h1>Hi, I am Arnie!</h1>
           <p class="intro">Can I get you a beer?</p>
           <p><button id="startSession" class="primary" data-ng-click="startSession()" data-ng-disabled="status.sessionStarted">Beer Me!</button></p>
-          <div class="cancelContent" data-ng-hide="!status.sessionStarted">
+          <div class="cancelContent" data-ng-hide="!status.sessionStarted || status.vendInProgress">
           	<p class="instructions">Coming right up!<br/>Just use the keypad below<br/> to pick your brew.</p>
             <h2 class="cancelContent--title">Change your mind?</h2>
-            <p><button id="endSession" class="danger" data-ng-click="endSession()" data-ng-disabled="status.vendInProgress">Cancel</button></p>
+            <p><button id="endSession" class="danger" data-ng-click="endSession()">Cancel</button></p>
           </div>
         </div>
         <footer>
