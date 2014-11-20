@@ -4,7 +4,7 @@ var vendSerialPort,
 	serialPortOpen = false,
     vendFailed = false,
     sessionStarted = false,
-    machineReady = false,
+    machineReady = null,
     vendInProgress = false,
     vendSuccess = false;
 

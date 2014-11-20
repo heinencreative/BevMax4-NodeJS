@@ -109,6 +109,11 @@ footer{
 .overlay--content {
   margin-top: 300px;
 }
+.overlay--connecting {
+  color: #FAA732;
+  padding-right: 30px;
+  background: url(img/preloader.gif) right no-repeat;
+}
 .overlay--close {
   position: absolute;
   top: 30px;

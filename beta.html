@@ -38,6 +38,7 @@
             <p><strong>Vend In Progress: </strong><span class="status" data-ng-class="{'false':!status.vendInProgress}">{{status.vendInProgress}}</span></p>
             <p><strong>Vend Success: </strong><span class="status" data-ng-class="{'false':!status.vendSuccess}">{{status.vendSuccess}}</span></p>
             <p><strong>Vend Failed: </strong><span class="status" data-ng-class="{'false':!status.vendFailed}">{{status.vendFailed}}</span></p>
+            <p data-ng-hide="status.machineReady"><span class="overlay--connecting">Please wait while you are connected</span></p>
             <button class="overlay--close" data-ng-click="overlay = false" data-ng-show="status.machineReady">Close</button>
             <button class="overlay--reset" data-ng-click="reload()" data-ng-show="status.machineReady">Reset</button>
           </div>
