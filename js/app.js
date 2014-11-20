@@ -59,7 +59,6 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
       if (!$scope.status.vendInProgress) {
         // Request to end session
           $http.get('/requestendsession').success(function(data){
-           console.log('clear timer end vending session');
             clearTimeout(timer);
             console.log("requested end session", data);
             // Actually end the session
@@ -80,11 +79,15 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
     });
   };
 
+  // Reload page
+  $scope.reload = function(){
+    location.reload();
+  };
+
   // Count down from X to 0
   function countdown(){
-  	console.log('countdown start');
     $http.get('/status').success(function(data){
-    console.log('seconds',seconds);
+      console.log('ping status',data);
       // Continuously update status until session is ended
       $scope.status = data;
 
@@ -96,12 +99,13 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
         }
         $scope.time = seconds;
         seconds --;
-        timer = setTimeout(countdown, 1000);
-      } else if (!$scope.status.vendSuccess) {
-        // If there wasn't a successful vend, keep counting
-        timer = setTimeout(countdown, 1000);
+      } else if ($scope.status.vendSuccess) {
+        // If the session was successful, clearTimeout()
+        console.log('clearTimeout');
+        clearTimeout(timer);
       }
       // TODO: add case for when user is stupid and selects an empty row, then chastise them.
+      timer = setTimeout(countdown, 1000);
     });
   }
 

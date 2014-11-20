@@ -110,10 +110,24 @@ footer{
   margin-top: 300px;
 }
 .overlay--close {
-  color: #000;
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  color: #FFF;
+  font-size: 22px;
+  padding:10px 20px;
+  background: #000;
+  box-shadow:none;
+  border:2px solid #FFF;
+}
+.overlay--reset{
+  background: #D9534F;
+  border: 2px solid #D43F3A;
+  color: #FFF;
   font-size: 22px;
   margin-top: 50px;
   padding:10px 20px;
+  box-shadow:none;
 }
 .status {
   color: green;

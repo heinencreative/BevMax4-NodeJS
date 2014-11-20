@@ -39,6 +39,7 @@
             <p><strong>Vend Success: </strong><span class="status" data-ng-class="{'false':!status.vendSuccess}">{{status.vendSuccess}}</span></p>
             <p><strong>Vend Failed: </strong><span class="status" data-ng-class="{'false':!status.vendFailed}">{{status.vendFailed}}</span></p>
             <button class="overlay--close" data-ng-click="overlay = false" data-ng-show="status.machineReady">Close</button>
+            <button class="overlay--reset" data-ng-click="reload()" data-ng-show="status.machineReady">Reset</button>
           </div>
         </div>
         <script src="js/angular.min.js"></script>
