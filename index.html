@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body data-ng-controller="ArnieController">
-        <div class="ribbon" data-ng-click="status(); overlay = true;"><div class="ribbon--inner">Beta</div></div>
+        <div class="ribbon" data-ng-click="statusCheck(); overlay = true;"><div class="ribbon--inner">Beta</div></div>
         <div class="counter" data-ng-hide="!status.sessionStarted || status.vendInProgress">
           <h3 class="counter--title">Timing Out</h3>
           <span class="counter--number">{{time}}</span>

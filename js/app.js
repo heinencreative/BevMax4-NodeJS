@@ -82,7 +82,7 @@ arnieApp.controller('ArnieController', ['$scope', '$http', '$timeout', '$interva
   };
 
   // Check status
-  $scope.status = function(){
+  $scope.statusCheck = function(){
     $http.get('/status').success(function(data){
       $scope.status = data;
     });
