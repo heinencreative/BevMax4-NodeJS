@@ -13,7 +13,7 @@ html {
 }
 
 body {
-  background: url(img/noisy-texture.png), radial-gradient(#DC210F,#6D0E08);
+  background: url(../img/noisy-texture.png), radial-gradient(#DC210F,#6D0E08);
   font-family: Georgia;
   text-align: center;
 }
@@ -112,7 +112,7 @@ footer{
 .overlay--connecting {
   color: #FAA732;
   padding-right: 30px;
-  background: url(img/preloader.gif) right no-repeat;
+  background: url(../img/preloader.gif) right no-repeat;
 }
 .overlay--close {
   position: absolute;

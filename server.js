@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var vender = require('./vender.js');
+var vender = require('js/vender.js');
 
 app.get('/connect', vender.setup);
 
