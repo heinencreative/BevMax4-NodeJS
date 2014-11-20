@@ -18,9 +18,9 @@ body {
   text-align: center;
 }
 
-/** {
-  cursor: none;  Touch screen should have no cursor
-}*/
+* {
+  cursor: none;  /* Touch screen should have no cursor */
+}
 
 h1 {
   font-size: 70px;
@@ -46,12 +46,15 @@ button:disabled {
 .danger {
   background: -webkit-linear-gradient(top,#EC3216, #AB2511);
 }
-.intro {
+.intro, .instructions {
   font-size: 40px;
   color: #FF9383;
   text-shadow:-1px -1px #961F17;
   margin-top: .5em;
   margin-bottom: 1.5em;
+}
+.instructions {
+  margin-top: 80px;
 }
 
 /* ================================================
@@ -66,7 +69,7 @@ button:disabled {
 
 .primaryContent {
   color:#FFF;
-  margin-top: 300px;
+  margin-top:350px;
   text-shadow: 1px 1px #AB2511, -1px -1px #6D0E08;
 }
 
@@ -99,12 +102,12 @@ footer{
   top: 0;
   left: 0;
   color: #FFF;
-  background: rgba(0,0,0,.8);
+  background: rgba(0,0,0,.85);
   height: 100%;
   width: 100%;
 }
 .overlay--content {
-  margin-top: 400px;
+  margin-top: 300px;
 }
 .overlay--close {
   color: #000;
