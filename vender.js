@@ -122,6 +122,7 @@ function processMessage(data){
                 if(dataArray[1] == "02"){ //SUCCESS
                     console.log("VMC: Vend Success.");
                     vendSuccess = true;
+                    vendInProgress = false
                 } else {
                    console.log("VMC: Unknown message: " + data);
                 }
