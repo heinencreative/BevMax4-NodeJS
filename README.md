@@ -1,4 +1,4 @@
-# Arnie Node.js
+# BevMax4 Node.js Application
 
 Simple node.js application used to interface with a vending machine. This code uses the Upstate Networks PC2MDB to treat MDB (the vending machine protocol) as a regular serial stream. The vending machine used is a BevMax4.
 
